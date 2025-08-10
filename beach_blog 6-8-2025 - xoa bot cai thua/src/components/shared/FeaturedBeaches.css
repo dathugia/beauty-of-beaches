@@ -1,0 +1,178 @@
+.featured-beaches {
+  padding: 100px 0;
+  background: #ffffff;
+}
+
+.featured-beaches__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.featured-beaches__header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.featured-beaches__title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  line-height: 1.2;
+}
+
+.featured-beaches__subtitle {
+  font-size: 1.2rem;
+  color: #5a6c7d;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.featured-beaches__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 35px;
+}
+
+.beach-card {
+  background: #ffffff;
+  border-radius: 0 !important;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.beach-card:hover {
+  transform: translateY(-8px) scale(1.02);
+}
+
+.beach-card__image-container {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  border-radius: 0 !important;
+}
+
+.beach-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 0 !important;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.beach-card:hover .beach-card__image {
+  transform: scale(1.08);
+}
+
+.beach-card__content {
+  padding: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.beach-card__info {
+  flex: 1;
+}
+
+.beach-card__name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.beach-card__country {
+  font-size: 1rem;
+  color: #5a6c7d;
+  margin: 0;
+  font-weight: 400;
+}
+
+.beach-card__details {
+  color: #7f8c8d;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  margin-left: 20px;
+  padding: 8px 16px;
+  border-radius: 0 !important;
+}
+
+.beach-card__details:hover {
+  color: #2c3e50;
+  background: rgba(44, 62, 80, 0.05);
+  transform: translateX(3px);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .featured-beaches__grid {
+    gap: 25px;
+  }
+  
+  .beach-card__image-container {
+    height: 220px;
+  }
+}
+
+@media (max-width: 768px) {
+  .featured-beaches {
+    padding: 80px 0;
+  }
+  
+  .featured-beaches__title {
+    font-size: 2.2rem;
+  }
+  
+  .featured-beaches__subtitle {
+    font-size: 1.1rem;
+  }
+  
+  .featured-beaches__grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+  
+  .beach-card__image-container {
+    height: 200px;
+  }
+  
+  .beach-card__content {
+    padding: 20px;
+  }
+  
+  .beach-card__name {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .featured-beaches__container {
+    padding: 0 15px;
+  }
+  
+  .featured-beaches__title {
+    font-size: 1.8rem;
+  }
+  
+  .featured-beaches__subtitle {
+    font-size: 1rem;
+  }
+  
+  .beach-card__content {
+    padding: 18px;
+  }
+  
+  .beach-card__name {
+    font-size: 1.2rem;
+  }
+  
+  .beach-card__country {
+    font-size: 0.9rem;
+  }
+}

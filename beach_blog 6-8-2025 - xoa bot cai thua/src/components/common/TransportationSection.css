@@ -1,0 +1,181 @@
+.transportation-section {
+  padding: 80px 0;
+  background: #ffffff;
+}
+
+.transportation-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.transportation-header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.transportation-header h2 {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.transportation-header p {
+  font-size: 1.2rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.transportation-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+}
+
+.transportation-card {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 15px;
+  padding: 30px 25px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.transportation-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.transportation-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.card-icon {
+  margin-bottom: 20px;
+}
+
+.card-icon .icon {
+  font-size: 3rem;
+  display: block;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.card-description {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 25px;
+}
+
+.card-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.option-item {
+  background: white;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border-left: 3px solid #667eea;
+  transition: all 0.3s ease;
+}
+
+.option-item:hover {
+  transform: translateX(5px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+}
+
+.option-name {
+  color: #333;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .transportation-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+  }
+  
+  .transportation-header h2 {
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .transportation-section {
+    padding: 60px 0;
+  }
+  
+  .transportation-header h2 {
+    font-size: 2rem;
+  }
+  
+  .transportation-header p {
+    font-size: 1.1rem;
+  }
+  
+  .transportation-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .transportation-card {
+    padding: 25px 20px;
+  }
+  
+  .card-icon .icon {
+    font-size: 2.5rem;
+  }
+  
+  .card-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .transportation-header h2 {
+    font-size: 1.8rem;
+  }
+  
+  .transportation-card {
+    padding: 20px 15px;
+  }
+  
+  .card-icon .icon {
+    font-size: 2rem;
+  }
+  
+  .card-title {
+    font-size: 1.2rem;
+  }
+  
+  .option-item {
+    padding: 10px 12px;
+  }
+  
+  .option-name {
+    font-size: 0.85rem;
+  }
+}

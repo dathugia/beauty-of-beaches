@@ -1,0 +1,29 @@
+.marquee-footer {
+  background-color: #1e2a38;
+  color: white;
+  padding: 10px 0;
+  overflow: hidden;
+  position: relative;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+}
+
+.marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 25s linear infinite;
+}
+
+.marquee-text:hover {
+  animation-play-state: paused;
+  cursor: pointer;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}

@@ -1,0 +1,128 @@
+.regions-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px 0;
+}
+
+.region-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.region-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.region-card h3 {
+  color: #2c3e50;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.region-card p {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+}
+
+.beach-card {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
+}
+
+.beach-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+}
+
+.beach-image {
+  position: relative;
+  overflow: hidden;
+  height: 200px;
+}
+
+.beach-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.beach-card:hover .beach-image img {
+  transform: scale(1.1);
+}
+
+.beach-info {
+  padding: 20px;
+}
+
+.beach-info h3 {
+  color: #2c3e50;
+  margin-bottom: 8px;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.country {
+  color: #3498db;
+  font-weight: 500;
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.description {
+  color: #7f8c8d;
+  margin-bottom: 20px;
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.btn-outline-primary {
+  border-color: #3498db;
+  color: #3498db;
+  border-radius: 25px;
+  padding: 8px 20px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+  background-color: #3498db;
+  border-color: #3498db;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 25px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .region-card {
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .beach-card {
+    margin-bottom: 20px;
+  }
+}

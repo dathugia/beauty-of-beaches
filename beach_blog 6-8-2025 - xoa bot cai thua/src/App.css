@@ -1,0 +1,13 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Chỉ ẩn overflow ngang, cho phép scroll dọc */
+}
+
+/* Đảm bảo app-container có thể scroll */
+.app-container {
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
