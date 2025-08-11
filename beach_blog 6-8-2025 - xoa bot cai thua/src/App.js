@@ -11,6 +11,7 @@ import AboutUs from "./components/pages/about/AboutUs";
 import Feedback from "./components/pages/feedback/Feedback";
 import ContactUs from "./components/pages/contact/ContactUs";
 import SiteMap from "./components/pages/sitemap/SiteMap";
+import BeachDetail from "./components/pages/BeachDetail";
 
 const App = () => {
   return (
@@ -29,6 +30,7 @@ const App = () => {
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/sitemap" element={<SiteMap />} />
+          <Route path="/beach/:id" element={<BeachDetail />} />
         </Routes>
 
         <Footer />
