@@ -81,6 +81,31 @@
   opacity: 1;
 }
 
+/* Dropdown menu styling for different pages */
+.dropdown-home .dropdown-menu {
+  background: #00000080 !important;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.dropdown-other .dropdown-menu {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%) !important;
+  border: 2px solid rgba(255, 107, 107, 0.3);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.dropdown-other .dropdown-item {
+  color: #ecf0f1 !important;
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-other .dropdown-item:hover {
+  background: rgba(255, 107, 107, 0.2) !important;
+  color: #ff6b6b !important;
+  transform: translateX(5px);
+}
+
 /* Fade in/out effect for nav items */
 .nav-item {
   opacity: 0;

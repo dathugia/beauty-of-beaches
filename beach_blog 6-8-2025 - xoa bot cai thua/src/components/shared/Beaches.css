@@ -1,0 +1,94 @@
+/* Beach Cards Styling */
+.beach-card {
+  transition: all 0.3s ease;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.beach-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.beach-card .card-img-top {
+  transition: transform 0.3s ease;
+}
+
+.beach-card:hover .card-img-top {
+  transform: scale(1.05);
+}
+
+.beach-card .card-body {
+  padding: 1.5rem;
+}
+
+.beach-card .badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  border: none;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: 20px;
+}
+
+.beach-card .card-title {
+  color: #2c3e50 !important;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.beach-card .card-subtitle {
+  color: #7f8c8d !important;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.beach-card .btn {
+  border-radius: 25px;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+  border: 2px solid #667eea;
+  color: #667eea;
+  background: transparent;
+}
+
+.beach-card .btn:hover {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: transparent;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* Container styling */
+.beaches-container {
+  /* background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+/* Grid spacing */
+.beaches-grid {
+  margin-top: 2rem;
+}
+
+/* Loading animation */
+.loading-spinner {
+  color: #667eea;
+}
+
+/* Error styling */
+.error-alert {
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  color: white;
+}
+
+/* Footer styling */
+.beaches-footer {
+  margin-top: 3rem;
+  color: #7f8c8d;
+  font-weight: 500;
+}

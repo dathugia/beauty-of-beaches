@@ -57,11 +57,12 @@ const Header = () => {
             <Nav className="mx-auto gap-4 p-2">
               <Nav.Link as={Link} to="/">Home</Nav.Link>
               <NavDropdown 
-                title="The List" 
+                title="THE LIST"
                 id="nav-list-dropdown"
                 show={isDropdownOpen}
                 onMouseEnter={() => setIsDropdownOpen(true)}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className={isHomePage ? "dropdown-home" : "dropdown-other"}
               >
                 <NavDropdown.Item as={Link} to="/regions/east">East</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to="/regions/north">North</NavDropdown.Item>

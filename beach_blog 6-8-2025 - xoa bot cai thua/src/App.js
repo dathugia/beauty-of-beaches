@@ -6,6 +6,7 @@ import ScrollToTop from "./components/common/ScrollToTop";
 
 import Home from "./components/pages/Home";
 import Gallery from "./components/pages/Gallery";
+import Top50 from "./components/pages/Top50";
 import Regions from "./components/pages/Regions";
 import AboutUs from "./components/pages/about/AboutUs";
 import Feedback from "./components/pages/feedback/Feedback";
@@ -25,7 +26,7 @@ const App = () => {
           <Route path="/regions" element={<Regions />} />
           <Route path="/regions/:direction" element={<Regions />} />
           <Route path="/gallery" element={<Gallery />} />
-          <Route path="/top50" element={<Gallery />} />
+          <Route path="/top50" element={<Top50 />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/contact" element={<ContactUs />} />
