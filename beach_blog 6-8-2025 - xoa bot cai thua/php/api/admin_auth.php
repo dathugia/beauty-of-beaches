@@ -1,0 +1,131 @@
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+
+require_once '../db/connect.php';
+
+// Xử lý preflight request
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    exit(0);
+}
+
+$conn = connect();
+
+// Lấy input từ request
+$input = json_decode(file_get_contents('php://input'), true);
+$action = $input['action'] ?? '';
+
+switch ($action) {
+    case 'login':
+        handleLogin($conn, $input);
+        break;
+    case 'logout':
+        handleLogout($conn, $input);
+        break;
+    case 'verify':
+        handleVerify($conn, $input);
+        break;
+    default:
+        echo json_encode(['success' => false, 'message' => 'Invalid action']);
+}
+
+function handleLogin($conn, $input) {
+    $username = $input['username'] ?? '';
+    $password = $input['password'] ?? '';
+    
+    if (empty($username) || empty($password)) {
+        echo json_encode(['success' => false, 'message' => 'Username and password are required']);
+        return;
+    }
+    
+    // Tìm admin trong database
+    $stmt = $conn->prepare("SELECT id, username, password_hash, email FROM admins WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        echo json_encode(['success' => false, 'message' => 'Invalid username or password']);
+        return;
+    }
+    
+    $admin = $result->fetch_assoc();
+    
+    // Verify password
+    if (password_verify($password, $admin['password_hash'])) {
+        // Tạo session token
+        $session_token = bin2hex(random_bytes(32));
+        $expires_at = date('Y-m-d H:i:s', strtotime('+24 hours'));
+        
+        // Lưu session vào database
+        $stmt = $conn->prepare("INSERT INTO admin_sessions (admin_id, session_token, expires_at) VALUES (?, ?, ?)");
+        $stmt->bind_param("iss", $admin['id'], $session_token, $expires_at);
+        $stmt->execute();
+        
+        // Cập nhật last_login
+        $stmt = $conn->prepare("UPDATE admins SET last_login = NOW() WHERE id = ?");
+        $stmt->bind_param("i", $admin['id']);
+        $stmt->execute();
+        
+        echo json_encode([
+            'success' => true,
+            'message' => 'Login successful',
+            'admin' => [
+                'id' => $admin['id'],
+                'username' => $admin['username'],
+                'email' => $admin['email'],
+                'session_token' => $session_token
+            ]
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Invalid username or password']);
+    }
+}
+
+function handleLogout($conn, $input) {
+    $session_token = $input['session_token'] ?? '';
+    
+    if (!empty($session_token)) {
+        // Xóa session
+        $stmt = $conn->prepare("DELETE FROM admin_sessions WHERE session_token = ?");
+        $stmt->bind_param("s", $session_token);
+        $stmt->execute();
+    }
+    
+    echo json_encode(['success' => true, 'message' => 'Logout successful']);
+}
+
+function handleVerify($conn, $input) {
+    $session_token = $input['session_token'] ?? '';
+    
+    if (empty($session_token)) {
+        echo json_encode(['success' => false, 'message' => 'No session token provided']);
+        return;
+    }
+    
+    // Kiểm tra session
+    $stmt = $conn->prepare("
+        SELECT a.id, a.username, a.email 
+        FROM admins a 
+        JOIN admin_sessions s ON a.id = s.admin_id 
+        WHERE s.session_token = ? AND s.expires_at > NOW()
+    ");
+    $stmt->bind_param("s", $session_token);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $admin = $result->fetch_assoc();
+        echo json_encode([
+            'success' => true,
+            'admin' => $admin
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Invalid or expired session']);
+    }
+}
+
+$conn->close();
+?>

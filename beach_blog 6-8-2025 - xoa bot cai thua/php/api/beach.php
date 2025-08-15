@@ -16,7 +16,10 @@ if ($id <= 0) {
     exit;
 }
 
-$sql = "SELECT * FROM beaches WHERE id = $id";
+$sql = "SELECT b.*, r.name as region_name, r.city, r.national 
+        FROM beaches b 
+        LEFT JOIN regions r ON b.region_id = r.id 
+        WHERE b.id = $id";
 $rs = query($sql);
 $row = $rs->fetch_assoc();
 

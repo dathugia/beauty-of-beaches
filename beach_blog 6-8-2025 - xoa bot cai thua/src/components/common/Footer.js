@@ -48,8 +48,16 @@ const Footer = () => {
             <div className="footer-contact">
               <p>Email: info@beautyofbeaches.com</p>
               <p>Phone: +84 28 1234 5678</p>
-              <p>Address: 123 Beach Street, Ho Chi Minh City</p>
+              <p>Address: 13 Trinh Van Bo Street, Ha Noi City</p>
             </div>
+          </div>
+
+          {/* Column 5: Admin */}
+          <div className="footer-column">
+            <h3 className="footer-title">Admin</h3>
+            <ul className="footer-links">
+              <li><Link to="/admin/login">Admin Login</Link></li>
+            </ul>
           </div>
         </div>
       </div>

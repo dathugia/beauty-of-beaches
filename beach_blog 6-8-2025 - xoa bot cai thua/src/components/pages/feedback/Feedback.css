@@ -1,10 +1,7 @@
 .feedback-container {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 120px 0 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #f8f9fa; /* Nền xám nhạt trung tính */
+  padding: 96px 0 48px; /* Đẩy nội dung xuống dưới header cố định */
+  display: block; /* Layout đơn giản */
 }
 
 .feedback-content {
@@ -15,31 +12,29 @@
 }
 
 .feedback-header {
-  text-align: center;
-  margin-bottom: 50px;
-  color: white;
+  text-align: center; /* Căn giữa tiêu đề */
+  margin-bottom: 32px; /* Giảm margin cho gọn */
+  color: #212529; /* Màu chữ tối trung tính */
 }
 
 .feedback-header h1 {
-  font-size: 3rem;
-  font-weight: 700;
-  margin-bottom: 20px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  font-size: 2rem; /* Kích thước vừa phải */
+  font-weight: 600; /* Đậm vừa */
+  margin-bottom: 12px; /* Khoảng cách gọn */
 }
 
 .feedback-header p {
-  font-size: 1.2rem;
-  opacity: 0.9;
-  line-height: 1.6;
+  font-size: 1rem; /* Nhỏ gọn hơn */
+  color: #6c757d; /* Xám trung tính */
+  line-height: 1.6; /* Dễ đọc */
 }
 
 .feedback-form {
-  background: white;
-  padding: 50px;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: #fff; /* Nền trắng đơn giản */
+  padding: 24px; /* Padding gọn gàng */
+  border-radius: 8px; /* Bo góc nhẹ */
+  border: 1px solid #e9ecef; /* Viền mảnh */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Bóng nhẹ */
 }
 
 .form-group {
@@ -55,28 +50,42 @@
 }
 
 .form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 15px;
-  border: 2px solid #e1e5e9;
-  border-radius: 10px;
-  font-size: 1rem;
-  transition: all 0.3s ease;
-  background: #f8f9fa;
+.form-group textarea,
+.form-group select {
+  width: 100%; /* Chiếm toàn bộ chiều ngang */
+  padding: 10px 12px; /* Padding vừa phải */
+  border: 1px solid #ced4da; /* Viền giống Bootstrap */
+  border-radius: 6px; /* Bo góc nhẹ */
+  font-size: 1rem; /* Cỡ chữ chuẩn */
+  transition: border-color 0.2s ease, box-shadow 0.2s ease; /* Hiệu ứng focus nhẹ */
+  background: #fff; /* Nền trắng đơn giản */
 }
 
 .form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #667eea;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none; /* Bỏ viền mặc định */
+  border-color: #0d6efd; /* Màu primary Bootstrap */
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.1); /* Vòng sáng nhẹ */
 }
 
 .form-group input.error,
-.form-group textarea.error {
-  border-color: #e74c3c;
-  background: #fff5f5;
+.form-group textarea.error,
+.form-group select.error {
+  border-color: #dc3545; /* Đỏ Bootstrap */
+  background: #fff5f5; /* Nền nhạt khi lỗi */
+}
+
+/* Input file */
+.form-group input[type="file"] {
+  padding: 8px 12px; /* File input gọn hơn */
+  background: #fff; /* Nền trắng */
+}
+
+.form-group small {
+  display: inline-block;
+  margin-top: 8px;
+  color: #555;
 }
 
 .error-message {
@@ -87,138 +96,143 @@
 }
 
 .rating-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
+  display: flex; /* Xếp hàng ngang */
+  align-items: center; /* Căn giữa theo trục dọc */
+  gap: 8px; /* Khoảng cách giữa các sao */
+  margin-top: 8px; /* Cách trên một chút */
 }
 
 .star {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  opacity: 0.3;
+  background: none; /* Nút trong suốt */
+  border: none; /* Không viền */
+  font-size: 1.25rem; /* Nhỏ gọn hơn */
+  cursor: pointer; /* Con trỏ dạng tay */
+  transition: transform 0.15s ease, opacity 0.15s ease; /* Hiệu ứng nhẹ */
+  opacity: 0.4; /* Mờ nhẹ khi chưa chọn */
 }
 
 .star.active {
-  opacity: 1;
-  transform: scale(1.1);
+  opacity: 1; /* Đậm khi chọn */
+  transform: none; /* Không phóng to quá nhiều */
 }
 
 .star:hover {
-  transform: scale(1.2);
+  transform: scale(1.05); /* Hover rất nhẹ */
 }
 
 .rating-text {
-  font-weight: 600;
-  color: #667eea;
-  margin-left: 10px;
+  font-weight: 600; /* Đậm vừa */
+  color: #6c757d; /* Xám trung tính */
+  margin-left: 8px; /* Cách trái nhẹ */
 }
 
 .submit-btn {
-  width: 100%;
-  padding: 15px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 20px;
+  width: 100%; /* Nút full chiều ngang form */
+  padding: 10px 16px; /* Padding chuẩn Bootstrap */
+  background: #0d6efd; /* Màu primary Bootstrap */
+  color: #fff; /* Chữ trắng */
+  border: 1px solid #0d6efd; /* Viền cùng màu */
+  border-radius: 6px; /* Bo góc nhẹ */
+  font-size: 1rem; /* Cỡ chữ chuẩn */
+  font-weight: 600; /* Đậm vừa */
+  cursor: pointer; /* Con trỏ tay */
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease; /* Hiệu ứng nhẹ */
+  margin-top: 16px; /* Cách trên vừa phải */
 }
 
 .submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  background: #0b5ed7; /* Tông đậm hơn khi hover */
+  border-color: #0a58ca; /* Viền đậm hơn */
 }
 
 .submit-btn:active {
-  transform: translateY(0);
+  transform: translateY(0); /* Không nhảy quá nhiều */
 }
 
 /* Success message */
 .feedback-success {
-  text-align: center;
-  background: white;
-  padding: 60px 40px;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  text-align: center; /* Căn giữa nội dung */
+  background: #fff; /* Nền trắng */
+  padding: 24px; /* Padding gọn gàng */
+  border-radius: 8px; /* Bo góc nhẹ */
+  border: 1px solid #e9ecef; /* Viền mảnh */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Bóng nhẹ */
 }
 
 .success-icon {
-  font-size: 4rem;
-  margin-bottom: 20px;
+  font-size: 2.5rem; /* Kích thước vừa phải */
+  margin-bottom: 12px; /* Khoảng cách gọn */
 }
 
 .feedback-success h2 {
-  color: #27ae60;
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+  color: #198754; /* Màu xanh thành công kiểu Bootstrap */
+  font-size: 1.5rem; /* Cỡ chữ vừa */
+  margin-bottom: 12px; /* Khoảng cách gọn */
 }
 
 .feedback-success p {
-  color: #666;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 30px;
+  color: #6c757d; /* Xám trung tính */
+  font-size: 1rem; /* Cỡ chữ chuẩn */
+  line-height: 1.6; /* Dễ đọc */
+  margin-bottom: 16px; /* Khoảng cách gọn */
 }
 
 .btn {
-  padding: 12px 30px;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  display: inline-block;
+  padding: 10px 16px; /* Padding giống Bootstrap */
+  border: 1px solid transparent; /* Viền mặc định */
+  border-radius: 6px; /* Bo góc nhẹ */
+  font-size: 1rem; /* Cỡ chữ chuẩn */
+  font-weight: 600; /* Đậm vừa */
+  cursor: pointer; /* Con trỏ tay */
+  transition: background-color 0.15s ease, border-color 0.15s ease; /* Hiệu ứng nhẹ */
+  text-decoration: none; /* Không gạch chân */
+  display: inline-block; /* Hiển thị dạng nút */
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #0d6efd; /* Màu primary Bootstrap */
+  color: #fff; /* Chữ trắng */
+  border-color: #0d6efd; /* Viền cùng màu */
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+  background: #0b5ed7; /* Đậm hơn khi hover */
+  border-color: #0a58ca; /* Viền đậm hơn */
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .feedback-container {
-    padding: 100px 0 60px;
+    padding: 80px 0 32px; /* Đảm bảo không bị đè trên tablet/mobile */
   }
   
   .feedback-header h1 {
-    font-size: 2.5rem;
+    font-size: 1.5rem; /* Nhỏ gọn hơn */
   }
   
   .feedback-header p {
-    font-size: 1.1rem;
+    font-size: 0.95rem; /* Chữ nhỏ gọn */
   }
   
   .feedback-form {
-    padding: 30px 20px;
+    padding: 20px; /* Giảm padding trên mobile */
   }
   
   .feedback-success {
-    padding: 40px 20px;
+    padding: 20px; /* Giảm padding */
   }
   
   .feedback-success h2 {
-    font-size: 2rem;
+    font-size: 1.25rem; /* Giảm cỡ chữ */
   }
 }
 
 @media (max-width: 480px) {
+  .feedback-container {
+    padding-top: 72px; /* Header nhỏ hơn trên mobile rất nhỏ */
+  }
   .feedback-header h1 {
-    font-size: 2rem;
+    font-size: 1.35rem; /* Nhỏ gọn trên màn hình rất nhỏ */
   }
   
   .feedback-form {

@@ -29,21 +29,21 @@ const ContactUs = () => {
     const newErrors = {};
     
     if (!formData.name.trim()) {
-      newErrors.name = 'Tên là bắt buộc';
+      newErrors.name = 'Name is required';
     }
     
     if (!formData.email.trim()) {
-      newErrors.email = 'Email là bắt buộc';
+      newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email không hợp lệ';
+      newErrors.email = 'Invalid email address';
     }
     
     if (!formData.subject.trim()) {
-      newErrors.subject = 'Tiêu đề là bắt buộc';
+      newErrors.subject = 'Subject is required';
     }
     
     if (!formData.message.trim()) {
-      newErrors.message = 'Nội dung là bắt buộc';
+      newErrors.message = 'Message is required';
     }
     
     setErrors(newErrors);
@@ -71,13 +71,13 @@ const ContactUs = () => {
       <div className="contact-container">
         <div className="contact-success">
           <div className="success-icon">✅</div>
-          <h2>Tin nhắn đã được gửi!</h2>
-          <p>Cảm ơn bạn đã liên hệ. Chúng tôi sẽ phản hồi trong vòng 24 giờ.</p>
+          <h2>Your message has been sent!</h2>
+          <p>Thank you for reaching out. We will get back to you within 24 hours.</p>
           <button 
             className="btn btn-primary"
             onClick={() => setIsSubmitted(false)}
           >
-            Gửi tin nhắn khác
+            Send another message
           </button>
         </div>
       </div>
@@ -88,20 +88,20 @@ const ContactUs = () => {
     <div className="contact-container">
       <div className="contact-content">
         <div className="contact-header">
-          <h1>Liên Hệ Chúng Tôi</h1>
-          <p>Hãy liên hệ với chúng tôi nếu bạn có bất kỳ câu hỏi nào!</p>
+          <h1>Contact Us</h1>
+          <p>Please get in touch if you have any questions!</p>
         </div>
 
         <div className="contact-grid">
           {/* Contact Information */}
           <div className="contact-info">
-            <h2>Thông Tin Liên Hệ</h2>
+            <h2>Contact Information</h2>
             
             <div className="info-item">
               <div className="info-icon">📍</div>
               <div className="info-content">
-                <h3>Địa Chỉ</h3>
-                <p>123 Đường ABC, Quận 1<br />Thành phố Hồ Chí Minh, Việt Nam</p>
+                <h3>Address</h3>
+                <p>13 Trinh Van Bo<br />Ha Noi City, Vietnam</p>
               </div>
             </div>
 
@@ -116,7 +116,7 @@ const ContactUs = () => {
             <div className="info-item">
               <div className="info-icon">📞</div>
               <div className="info-content">
-                <h3>Điện Thoại</h3>
+                <h3>Phone</h3>
                 <p>+84 28 1234 5678<br />+84 90 123 4567</p>
               </div>
             </div>
@@ -124,13 +124,13 @@ const ContactUs = () => {
             <div className="info-item">
               <div className="info-icon">🕒</div>
               <div className="info-content">
-                <h3>Giờ Làm Việc</h3>
-                <p>Thứ 2 - Thứ 6: 8:00 - 18:00<br />Thứ 7: 8:00 - 12:00</p>
+                <h3>Working Hours</h3>
+                <p>Mon - Fri: 8:00 - 18:00<br />Sat: 8:00 - 12:00</p>
               </div>
             </div>
 
             <div className="social-links">
-              <h3>Theo Dõi Chúng Tôi</h3>
+              <h3>Follow Us</h3>
               <div className="social-icons">
                 <a href="#" className="social-icon">📘</a>
                 <a href="#" className="social-icon">📷</a>
@@ -142,10 +142,10 @@ const ContactUs = () => {
 
           {/* Contact Form */}
           <div className="contact-form-container">
-            <h2>Gửi Tin Nhắn</h2>
+            <h2>Send a Message</h2>
             <form className="contact-form" onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="name">Họ và tên *</label>
+                <label htmlFor="name">Full name *</label>
                 <input
                   type="text"
                   id="name"
@@ -153,7 +153,7 @@ const ContactUs = () => {
                   value={formData.name}
                   onChange={handleChange}
                   className={errors.name ? 'error' : ''}
-                  placeholder="Nhập họ và tên của bạn"
+                  placeholder="Enter your full name"
                 />
                 {errors.name && <span className="error-message">{errors.name}</span>}
               </div>
@@ -167,13 +167,13 @@ const ContactUs = () => {
                   value={formData.email}
                   onChange={handleChange}
                   className={errors.email ? 'error' : ''}
-                  placeholder="Nhập email của bạn"
+                  placeholder="Enter your email"
                 />
                 {errors.email && <span className="error-message">{errors.email}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="subject">Tiêu đề *</label>
+                <label htmlFor="subject">Subject *</label>
                 <input
                   type="text"
                   id="subject"
@@ -181,27 +181,27 @@ const ContactUs = () => {
                   value={formData.subject}
                   onChange={handleChange}
                   className={errors.subject ? 'error' : ''}
-                  placeholder="Nhập tiêu đề tin nhắn"
+                  placeholder="Enter your subject"
                 />
                 {errors.subject && <span className="error-message">{errors.subject}</span>}
               </div>
 
               <div className="form-group">
-                <label htmlFor="message">Nội dung *</label>
+                <label htmlFor="message">Message *</label>
                 <textarea
                   id="message"
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
                   className={errors.message ? 'error' : ''}
-                  placeholder="Nhập nội dung tin nhắn..."
+                  placeholder="Type your message..."
                   rows="6"
                 />
                 {errors.message && <span className="error-message">{errors.message}</span>}
               </div>
 
               <button type="submit" className="submit-btn">
-                Gửi Tin Nhắn
+                Send Message
               </button>
             </form>
           </div>

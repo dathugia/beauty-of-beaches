@@ -6,14 +6,14 @@ const AboutUs = () => {
     <div className="about-us-container">
       <div className="about-content">
         {/* Header Section */}
-        <div className="about-header">
+        {/* <div className="about-header">
           <h1 className="main-title">ABOUT US</h1>
           <h2 className="subtitle">INSPIRING EPIC BEACH DAYS FOR OVER 7 YEARS</h2>
-        </div>
+        </div> */}
 
         {/* Story Section */}
         <div className="story-section">
-          <h3>OUR STORY</h3>
+          <h3>Our story</h3>
           <div className="story-content">
             <p>
               The idea for The World's 50 Best Beaches was sparked by our genuine passion for the beach. 
@@ -39,15 +39,15 @@ const AboutUs = () => {
 
         {/* Mission Section */}
         <div className="mission-section">
-          <h3>OUR MISSION</h3>
+          <h3>Our mission</h3>
           <p className="mission-text">
-            WE WANT TO TELL THE WORLD THE STORY OF NATURE'S MOST STUNNING SETTING, THE BEACH.
+            We want to tell the world the story of nature's most stunning setting, the beach.
           </p>
         </div>
 
         {/* Selection Process Section */}
         <div className="selection-section">
-          <h3>OUR SELECTION PROCESS</h3>
+          <h3>Our selection process</h3>
           <div className="selection-content">
             <p>
               Each year, we reach out to thousands of the world's most experienced travel professionals, 
@@ -62,7 +62,7 @@ const AboutUs = () => {
             </p>
             
             <div className="criteria-section">
-              <h4>Our Selection Criteria:</h4>
+              <h4>Our Selection Criteria</h4>
               <div className="criteria-grid">
                 <div className="criteria-column">
                   <ul className="criteria-list">
@@ -93,10 +93,20 @@ const AboutUs = () => {
               <div className="member-avatar">
                 <div className="avatar-placeholder"></div>
               </div>
-              <h4 className="member-name">Sarah Johnson</h4>
-              <p className="member-role">Founder & CEO</p>
+              <h4 className="member-name">Nhữ Văn Tuấn</h4>
+              <p className="member-role">Leader</p>
               <p className="member-description">
-                Travel enthusiast with 10+ years of experience exploring coastal destinations worldwide.
+              Team Leader & Full-stack Developer</p>
+            </div>
+            
+            <div className="team-member">
+              <div className="member-avatar">
+                <div className="avatar-placeholder"></div>
+              </div>
+              <h4 className="member-name">Đào Thu Giang</h4>
+              <p className="member-role">Frontend Developer</p>
+              <p className="member-description">
+              ReactJS, Bootstrap, UI/UX
               </p>
             </div>
             
@@ -104,10 +114,10 @@ const AboutUs = () => {
               <div className="member-avatar">
                 <div className="avatar-placeholder"></div>
               </div>
-              <h4 className="member-name">Mike Chen</h4>
-              <p className="member-role">Lead Photographer</p>
+              <h4 className="member-name">Nguyễn Tùng Dương</h4>
+              <p className="member-role">Backend Developer</p>
               <p className="member-description">
-                Award-winning photographer specializing in landscape and travel photography.
+                PHP, MySQL, API
               </p>
             </div>
             
@@ -115,28 +125,17 @@ const AboutUs = () => {
               <div className="member-avatar">
                 <div className="avatar-placeholder"></div>
               </div>
-              <h4 className="member-name">Emma Rodriguez</h4>
-              <p className="member-role">Content Director</p>
+              <h4 className="member-name">Nghiêm Thái Vũ</h4>
+              <p className="member-role">Designer</p>
               <p className="member-description">
-                Expert travel writer and cultural researcher with passion for coastal destinations.
-              </p>
-            </div>
-            
-            <div className="team-member">
-              <div className="member-avatar">
-                <div className="avatar-placeholder"></div>
-              </div>
-              <h4 className="member-name">David Kim</h4>
-              <p className="member-role">Technology Lead</p>
-              <p className="member-description">
-                Full-stack developer and tech enthusiast who builds amazing digital experiences for beach lovers.
+              UI/UX Designer & Content Creator
               </p>
             </div>
           </div>
         </div>
 
         {/* Download Section */}
-        <div className="download-section">
+        {/* <div className="download-section">
           <h4>Download Complete Information</h4>
           <div className="download-buttons">
             <button className="btn btn-primary" onClick={() => downloadFile('pdf')}>
@@ -146,21 +145,21 @@ const AboutUs = () => {
               📝 Download DOC
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );
 };
 
 // Function to handle file download
-const downloadFile = (type) => {
-  // This would typically connect to your backend API
-  // For now, we'll show an alert
-  if (type === 'pdf') {
-    alert('PDF download feature will be implemented with backend integration');
-  } else {
-    alert('DOC download feature will be implemented with backend integration');
-  }
-};
+// const downloadFile = (type) => {
+//   // This would typically connect to your backend API
+//   // For now, we'll show an alert
+//   if (type === 'pdf') {
+//     alert('PDF download feature will be implemented with backend integration');
+//   } else {
+//     alert('DOC download feature will be implemented with backend integration');
+//   }
+// };
 
 export default AboutUs;

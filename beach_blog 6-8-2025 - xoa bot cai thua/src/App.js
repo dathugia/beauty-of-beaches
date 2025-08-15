@@ -13,6 +13,9 @@ import Feedback from "./components/pages/feedback/Feedback";
 import ContactUs from "./components/pages/contact/ContactUs";
 import SiteMap from "./components/pages/sitemap/SiteMap";
 import BeachDetail from "./components/pages/BeachDetail";
+import AdminDashboard from "./components/pages/admin/AdminDashboard";
+import AdminFeedbackManagement from "./components/pages/admin/AdminFeedbackManagement";
+import AdminLogin from "./components/pages/admin/AdminLogin";
 
 const App = () => {
   return (
@@ -32,6 +35,11 @@ const App = () => {
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/sitemap" element={<SiteMap />} />
           <Route path="/beach/:id" element={<BeachDetail />} />
+          
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/feedback" element={<AdminFeedbackManagement />} />
         </Routes>
 
         <Footer />

@@ -1,16 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Feedback.css';
+import { API_BASE_URL } from '../../../util/url';
 
 const Feedback = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    subject: '',
+    beachId: '',
     message: '',
-    rating: 5
+    rating: 5,
+    attachment: null
   });
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [beaches, setBeaches] = useState([]);
+  const [loadingBeaches, setLoadingBeaches] = useState(true);
+  const [beachesError, setBeachesError] = useState('');
+
+  useEffect(() => {
+    const loadBeaches = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/beaches.php`);
+        const json = await res.json();
+        if (json.status) {
+          setBeaches(json.data || []);
+        } else {
+          setBeachesError(json.message || 'Không tải được danh sách bãi biển');
+        }
+      } catch (e) {
+        setBeachesError(e.message);
+      } finally {
+        setLoadingBeaches(false);
+      }
+    };
+    loadBeaches();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,27 +51,38 @@ const Feedback = () => {
     }
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files && e.target.files[0] ? e.target.files[0] : null;
+    setFormData(prev => ({
+      ...prev,
+      attachment: file
+    }));
+    if (errors.attachment) {
+      setErrors(prev => ({ ...prev, attachment: '' }));
+    }
+  };
+
   const validateForm = () => {
     const newErrors = {};
     
     if (!formData.name.trim()) {
-      newErrors.name = 'Tên là bắt buộc';
+      newErrors.name = 'Name is required';
     }
     
     if (!formData.email.trim()) {
-      newErrors.email = 'Email là bắt buộc';
+      newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email không hợp lệ';
+      newErrors.email = 'Invalid email address';
     }
     
-    if (!formData.subject.trim()) {
-      newErrors.subject = 'Tiêu đề là bắt buộc';
+    if (!formData.beachId) {
+      newErrors.beachId = 'Please select a beach';
     }
     
     if (!formData.message.trim()) {
-      newErrors.message = 'Nội dung là bắt buộc';
+      newErrors.message = 'Message is required';
     } else if (formData.message.length < 10) {
-      newErrors.message = 'Nội dung phải có ít nhất 10 ký tự';
+      newErrors.message = 'Message must be at least 10 characters';
     }
     
     setErrors(newErrors);
@@ -64,9 +99,10 @@ const Feedback = () => {
         setFormData({
           name: '',
           email: '',
-          subject: '',
+          beachId: '',
           message: '',
-          rating: 5
+          rating: 5,
+          attachment: null
         });
       }, 1000);
     }
@@ -77,13 +113,13 @@ const Feedback = () => {
       <div className="feedback-container">
         <div className="feedback-success">
           <div className="success-icon">✅</div>
-          <h2>Cảm ơn bạn!</h2>
-          <p>Phản hồi của bạn đã được gửi thành công. Chúng tôi sẽ phản hồi sớm nhất có thể.</p>
+          <h2>Thank you!</h2>
+          <p>Your feedback has been sent successfully. We will get back to you as soon as possible.</p>
           <button 
             className="btn btn-primary"
             onClick={() => setIsSubmitted(false)}
           >
-            Gửi phản hồi khác
+            Send another feedback
           </button>
         </div>
       </div>
@@ -94,13 +130,13 @@ const Feedback = () => {
     <div className="feedback-container">
       <div className="feedback-content">
         <div className="feedback-header">
-          <h1>Gửi Phản Hồi</h1>
-          <p>Chúng tôi rất mong nhận được ý kiến đóng góp từ bạn để cải thiện website!</p>
+          <h1>Send Feedback</h1>
+          <p>We value your input to help improve our website!</p>
         </div>
 
         <form className="feedback-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="name">Họ và tên *</label>
+            <label htmlFor="name">Full name *</label>
             <input
               type="text"
               id="name"
@@ -108,7 +144,7 @@ const Feedback = () => {
               value={formData.name}
               onChange={handleChange}
               className={errors.name ? 'error' : ''}
-              placeholder="Nhập họ và tên của bạn"
+              placeholder="Enter your full name"
             />
             {errors.name && <span className="error-message">{errors.name}</span>}
           </div>
@@ -122,23 +158,28 @@ const Feedback = () => {
               value={formData.email}
               onChange={handleChange}
               className={errors.email ? 'error' : ''}
-              placeholder="Nhập email của bạn"
+              placeholder="Enter your email"
             />
             {errors.email && <span className="error-message">{errors.email}</span>}
           </div>
 
           <div className="form-group">
-            <label htmlFor="subject">Tiêu đề *</label>
-            <input
-              type="text"
-              id="subject"
-              name="subject"
-              value={formData.subject}
+            <label htmlFor="beachId">Select beach *</label>
+            <select
+              id="beachId"
+              name="beachId"
+              value={formData.beachId}
               onChange={handleChange}
-              className={errors.subject ? 'error' : ''}
-              placeholder="Nhập tiêu đề phản hồi"
-            />
-            {errors.subject && <span className="error-message">{errors.subject}</span>}
+              className={errors.beachId ? 'error' : ''}
+            >
+              <option value="">-- Select a beach --</option>
+              {loadingBeaches && <option value="" disabled>Loading beaches...</option>}
+              {!loadingBeaches && beachesError && <option value="" disabled>{beachesError}</option>}
+              {!loadingBeaches && !beachesError && beaches.map(b => (
+                <option key={b.id} value={b.id}>{b.name}</option>
+              ))}
+            </select>
+            {errors.beachId && <span className="error-message">{errors.beachId}</span>}
           </div>
 
           <div className="form-group">
@@ -159,21 +200,35 @@ const Feedback = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="message">Nội dung phản hồi *</label>
+            <label htmlFor="message">Message *</label>
             <textarea
               id="message"
               name="message"
               value={formData.message}
               onChange={handleChange}
               className={errors.message ? 'error' : ''}
-              placeholder="Nhập nội dung phản hồi của bạn..."
+              placeholder="Type your feedback..."
               rows="6"
             />
             {errors.message && <span className="error-message">{errors.message}</span>}
           </div>
 
+          <div className="form-group">
+            <label htmlFor="attachment">Attachment (optional)</label>
+            <input
+              type="file"
+              id="attachment"
+              name="attachment"
+              onChange={handleFileChange}
+              accept="image/*,application/pdf"
+              className={errors.attachment ? 'error' : ''}
+            />
+            {errors.attachment && <span className="error-message">{errors.attachment}</span>}
+            {formData.attachment && <small>Selected: {formData.attachment.name}</small>}
+          </div>
+
           <button type="submit" className="submit-btn">
-            Gửi Phản Hồi
+            Submit Feedback
           </button>
         </form>
       </div>

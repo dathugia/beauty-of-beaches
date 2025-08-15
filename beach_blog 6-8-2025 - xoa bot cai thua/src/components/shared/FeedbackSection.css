@@ -1,0 +1,301 @@
+/* FeedbackSection.css - Styling cho section hiển thị feedback giả lập */
+
+.feedback-section {
+  padding: 40px 0; /* Padding trên dưới cho section - giảm xuống */
+  background: #f8f9fa; /* Background màu xám nhạt đơn giản */
+  color: #333; /* Màu chữ tối */
+}
+
+/* Styling cho tiêu đề section */
+.section-header {
+  margin-bottom: 40px; /* Khoảng cách với nội dung bên dưới - giảm xuống */
+}
+
+.section-title {
+  font-size: 1.8rem; /* Kích thước font nhỏ hơn cho tiêu đề */
+  font-weight: 600; /* Font weight vừa phải */
+  margin-bottom: 10px; /* Khoảng cách với subtitle - giảm xuống */
+  color: #2c3e50; /* Màu chữ tối */
+}
+
+.section-subtitle {
+  font-size: 1rem; /* Kích thước font cho subtitle - giảm xuống */
+  color: #6c757d; /* Màu chữ xám */
+  max-width: 400px; /* Giới hạn chiều rộng - giảm xuống */
+  margin: 0 auto; /* Căn giữa */
+}
+
+/* Styling cho feedback card */
+.feedback-card {
+  background: white; /* Background trắng đơn giản */
+  border-radius: 8px; /* Bo góc nhẹ */
+  padding: 15px; /* Padding bên trong - giảm xuống */
+  height: 100%; /* Chiều cao đồng nhất */
+  border: 1px solid #e9ecef; /* Viền xám nhạt */
+  transition: all 0.2s ease; /* Hiệu ứng transition nhẹ */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); /* Bóng đổ nhẹ */
+}
+
+.feedback-card:hover {
+  transform: translateY(-2px); /* Di chuyển lên nhẹ khi hover */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12); /* Bóng đổ nhẹ hơn khi hover */
+}
+
+/* Styling cho ảnh trong feedback */
+.feedback-image {
+  margin-bottom: 15px; /* Khoảng cách với header */
+  border-radius: 6px; /* Bo góc cho ảnh */
+  overflow: hidden; /* Ẩn phần ảnh thừa */
+  height: 120px; /* Chiều cao cố định cho ảnh */
+}
+
+.feedback-image img {
+  width: 100%; /* Chiều rộng 100% */
+  height: 100%; /* Chiều cao 100% */
+  object-fit: cover; /* Cắt ảnh để vừa khung */
+  transition: transform 0.3s ease; /* Hiệu ứng zoom khi hover */
+}
+
+.feedback-card:hover .feedback-image img {
+  transform: scale(1.05); /* Zoom nhẹ khi hover */
+}
+
+/* Styling cho header của feedback card */
+.feedback-header {
+  display: flex; /* Flexbox layout */
+  justify-content: space-between; /* Căn đều 2 bên */
+  align-items: flex-start; /* Căn đầu */
+  margin-bottom: 12px; /* Khoảng cách với nội dung - giảm xuống */
+  flex-wrap: wrap; /* Cho phép wrap khi không đủ chỗ */
+  gap: 8px; /* Khoảng cách giữa các phần tử */
+}
+
+/* Styling cho thông tin user */
+.user-info {
+  display: flex; /* Flexbox layout */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  gap: 15px; /* Khoảng cách giữa avatar và thông tin */
+  flex: 1; /* Cho phép mở rộng để chiếm không gian còn lại */
+  min-width: 0; /* Cho phép co lại khi cần */
+}
+
+.user-avatar {
+  width: 35px; /* Chiều rộng avatar - giảm xuống */
+  height: 35px; /* Chiều cao avatar - giảm xuống */
+  background: #007bff; /* Background xanh đơn giản */
+  border-radius: 50%; /* Hình tròn */
+  display: flex; /* Flexbox layout */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  font-size: 1rem; /* Kích thước font - giảm xuống */
+  font-weight: 600; /* Font weight vừa phải */
+  color: white; /* Màu chữ trắng */
+}
+
+.user-name {
+  font-size: 0.9rem; /* Kích thước font - giảm xuống */
+  font-weight: 600; /* Font weight */
+  margin: 0 0 3px 0; /* Margin - giảm xuống */
+  color: #2c3e50; /* Màu chữ tối */
+}
+
+/* Styling cho rating stars */
+.rating-stars {
+  display: flex; /* Flexbox layout */
+  gap: 2px; /* Khoảng cách giữa các sao */
+}
+
+.star {
+  font-size: 0.9rem; /* Kích thước sao */
+  opacity: 0.3; /* Độ trong suốt cho sao không active */
+  transition: all 0.2s ease; /* Hiệu ứng transition */
+}
+
+.star.active {
+  opacity: 1; /* Độ trong suốt đầy đủ cho sao active */
+  color: #ffc107; /* Màu vàng nhạt hơn cho sao */
+}
+
+/* Styling cho ngày tháng */
+.feedback-date {
+  font-size: 0.8rem; /* Kích thước font nhỏ */
+  color: #6c757d; /* Màu chữ xám */
+  white-space: nowrap; /* Không cho phép xuống dòng */
+  flex-shrink: 0; /* Không cho phép co lại */
+}
+
+/* Styling cho nội dung feedback */
+.feedback-content {
+  margin-top: 10px; /* Khoảng cách với header - giảm xuống */
+  margin-bottom: 0; /* Bỏ margin bottom */
+}
+
+.feedback-comment {
+  font-size: 0.85rem; /* Kích thước font - giảm xuống */
+  line-height: 1.4; /* Chiều cao dòng - giảm xuống */
+  margin: 0; /* Reset margin */
+  color: #495057; /* Màu chữ tối */
+  display: -webkit-box; /* Hỗ trợ truncate text */
+  -webkit-line-clamp: 3; /* Giới hạn 3 dòng */
+  -webkit-box-orient: vertical; /* Hướng dọc */
+  overflow: hidden; /* Ẩn text thừa */
+  text-overflow: ellipsis; /* Hiển thị dấu ... */
+}
+
+/* ===== STYLING CHO NÚT SEND FEEDBACK ===== */
+/* Nút này được liên kết với trang feedback thông qua React Router */
+.btn-outline-primary {
+  border: 2px solid #007bff; /* Tăng độ dày viền */
+  color: #007bff; /* Màu chữ xanh */
+  background: transparent; /* Background trong suốt */
+  padding: 10px 25px; /* Tăng padding để nút to hơn */
+  font-size: 1rem; /* Tăng kích thước font */
+  font-weight: 600; /* Tăng font weight */
+  border-radius: 8px; /* Bo góc nhiều hơn */
+  transition: all 0.3s ease; /* Tăng thời gian transition */
+  cursor: pointer; /* Con trỏ pointer */
+  text-decoration: none; /* Bỏ gạch chân */
+  display: inline-block; /* Display inline-block */
+  position: relative; /* Position relative cho hiệu ứng */
+  overflow: hidden; /* Ẩn overflow */
+  letter-spacing: 0.5px; /* Tăng khoảng cách chữ */
+}
+
+/* Hiệu ứng hover - nút sẽ đổi màu và di chuyển lên */
+.btn-outline-primary:hover {
+  background: #007bff; /* Background xanh khi hover */
+  color: white; /* Màu chữ trắng khi hover */
+  transform: translateY(-2px); /* Di chuyển lên trên khi hover */
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3); /* Thêm shadow khi hover */
+}
+
+/* Hiệu ứng khi click - nút sẽ trở về vị trí ban đầu */
+.btn-outline-primary:active {
+  transform: translateY(0); /* Trở về vị trí ban đầu khi click */
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3); /* Giảm shadow khi click */
+}
+
+/* Hiệu ứng focus - cho accessibility */
+.btn-outline-primary:focus {
+  outline: none; /* Bỏ outline mặc định */
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Thêm focus ring */
+}
+
+/* Hiệu ứng ripple cho nút - tạo hiệu ứng sóng khi click */
+.btn-outline-primary::before {
+  content: ''; /* Nội dung rỗng */
+  position: absolute; /* Position absolute */
+  top: 50%; /* Căn giữa theo chiều dọc */
+  left: 50%; /* Căn giữa theo chiều ngang */
+  width: 0; /* Bắt đầu với width 0 */
+  height: 0; /* Bắt đầu với height 0 */
+  border-radius: 50%; /* Hình tròn */
+  background: rgba(255, 255, 255, 0.3); /* Màu trắng trong suốt */
+  transform: translate(-50%, -50%); /* Căn giữa chính xác */
+  transition: width 0.6s, height 0.6s; /* Transition cho hiệu ứng */
+}
+
+/* Khi click, ripple sẽ mở rộng */
+.btn-outline-primary:active::before {
+  width: 300px; /* Mở rộng khi click */
+  height: 300px; /* Mở rộng khi click */
+}
+
+/* Animation cho icon - icon sẽ phóng to khi hover */
+.btn-outline-primary i {
+  transition: transform 0.3s ease; /* Transition cho icon */
+}
+
+.btn-outline-primary:hover i {
+  transform: scale(1.1); /* Phóng to icon khi hover */
+}
+
+/* Styling cho loading state */
+.btn-outline-primary.loading {
+  opacity: 0.7; /* Giảm độ trong suốt khi loading */
+  cursor: not-allowed; /* Con trỏ not-allowed khi loading */
+  pointer-events: none; /* Không cho phép click khi loading */
+}
+
+.btn-outline-primary:disabled {
+  opacity: 0.7; /* Giảm độ trong suốt khi disabled */
+  cursor: not-allowed; /* Con trỏ not-allowed khi disabled */
+}
+
+/* Animation cho spinner */
+.fa-spinner {
+  animation: spin 1s linear infinite; /* Animation xoay cho spinner */
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive design cho tablet */
+@media (max-width: 768px) {
+  .feedback-section {
+    padding: 30px 0; /* Giảm padding trên mobile */
+  }
+  
+  .section-title {
+    font-size: 1.6rem; /* Giảm kích thước font trên mobile */
+  }
+  
+  .section-subtitle {
+    font-size: 0.9rem; /* Giảm kích thước font trên mobile */
+  }
+  
+  .feedback-card {
+    padding: 12px; /* Giảm padding trên mobile */
+  }
+  
+  .feedback-image {
+    height: 100px; /* Giảm chiều cao ảnh trên mobile */
+  }
+  
+  .user-avatar {
+    width: 30px; /* Giảm kích thước avatar trên mobile */
+    height: 30px; /* Giảm kích thước avatar trên mobile */
+    font-size: 0.9rem; /* Giảm kích thước font trên mobile */
+  }
+}
+
+/* Responsive design cho mobile */
+@media (max-width: 576px) {
+  .feedback-section {
+    padding: 25px 0; /* Giảm padding trên mobile nhỏ */
+  }
+  
+  .section-title {
+    font-size: 1.4rem; /* Giảm kích thước font trên mobile nhỏ */
+  }
+  
+  .feedback-image {
+    height: 80px; /* Giảm chiều cao ảnh trên mobile nhỏ */
+  }
+  
+  .feedback-header {
+    flex-direction: column; /* Xếp dọc trên mobile nhỏ */
+    gap: 8px; /* Khoảng cách */
+  }
+  
+  .user-info {
+    width: 100%; /* Chiếm toàn bộ chiều rộng */
+  }
+  
+  .feedback-date {
+    align-self: flex-end; /* Căn phải cho ngày tháng */
+    font-size: 0.75rem; /* Giảm font size trên mobile */
+  }
+  
+  .feedback-comment {
+    -webkit-line-clamp: 2; /* Giới hạn 2 dòng trên mobile */
+  }
+  
+  .btn-outline-primary {
+    padding: 8px 20px; /* Giảm padding trên mobile */
+    font-size: 0.9rem; /* Giảm kích thước font trên mobile */
+    border-width: 1px; /* Giảm độ dày viền trên mobile */
+  }
+}

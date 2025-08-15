@@ -1,0 +1,391 @@
+/* BeachHeader.css - Styling cho header bãi biển */
+
+/* Container chính cho header */
+.beach-header-container {
+    position: relative;
+    width: 100%;
+    height: 60vh; /* Chiều cao header */
+    min-height: 400px;
+    overflow: hidden;
+}
+
+/* Background với ảnh bãi biển */
+.beach-header-background {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-size: cover; /* Ảnh phủ toàn bộ */
+    background-position: center; /* Căn giữa ảnh */
+    background-repeat: no-repeat; /* Không lặp lại */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Overlay để text dễ đọc */
+.beach-header-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.3) 0%,
+        rgba(0, 0, 0, 0.1) 50%,
+        rgba(0, 0, 0, 0.3) 100%
+    );
+    z-index: 1;
+}
+
+/* Container cho nội dung chính */
+.beach-header-content {
+    position: absolute; /* Cố định cụm xuống đáy ảnh */
+    left: 0;
+    right: 0;
+    bottom: 0.005rem; /* cách đáy 1.25rem */
+    z-index: 2;
+    width: 100%;
+    height: auto; /* không chiếm toàn chiều cao */
+    display: grid;
+    grid-template-columns: 250px 1fr 250px; /* Cố định 3 cột với kích thước cố định */
+    align-items: end; /* canh các item theo đáy */
+    justify-items: center;
+    /* padding: 0 0; */
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 0rem; /* Khoảng cách giữa các cột */
+}
+
+/* Loading state */
+.beach-header-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Card chính chứa thông tin bãi biển */
+.beach-header-main {
+    grid-column: 2; /* Cột giữa */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 500px; /* Tăng chiều rộng để phù hợp với card */
+    height: 150px; /* Tăng chiều cao để phù hợp với card */
+    position: relative; /* Vị trí tương đối */
+}
+
+.beach-header-card {
+    background: rgba(255, 255, 255, 0.95); /* Background trắng trong suốt */
+    -webkit-backdrop-filter: blur(10px); /* Hiệu ứng blur cho Safari */
+    backdrop-filter: blur(10px); /* Hiệu ứng blur */
+    border-radius: 15px; /* Bo góc */
+  
+    text-align: center; /* Căn giữa text */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); /* Bóng đổ */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Viền trong suốt */
+    width: 500px; /* Tăng chiều rộng để có thêm không gian */
+    height: 150px; /* Tăng chiều cao để có thêm không gian */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: visible; /* Cho phép nội dung hiển thị đầy đủ */
+}
+
+/* Tiêu đề bãi biển */
+.beach-header-title {
+    font-size: 1.8rem; /* Kích thước font lớn */
+    font-weight: 700; /* Font đậm */
+    color: #2c3e50; /* Màu xanh đậm */
+    margin-bottom: 0.5rem; /* Khoảng cách dưới */
+    text-transform: uppercase; /* Chữ hoa */
+    letter-spacing: 2px; /* Khoảng cách chữ */
+    line-height: 1.2; /* Chiều cao dòng */
+    white-space: nowrap; /* Không xuống dòng */
+    overflow: visible; /* Cho phép text hiển thị đầy đủ */
+    text-overflow: clip; /* Không hiển thị dấu ... */
+    max-width: 100%; /* Giới hạn chiều rộng */
+    text-align: center; /* Căn giữa text */
+}
+
+/* Tên quốc gia */
+.beach-header-country {
+    font-size: 0.8rem; /* Kích thước font vừa */
+    font-weight: 500; /* Font vừa */
+    color: #7f8c8d; /* Màu xám */
+    margin-bottom: 1rem; /* Khoảng cách dưới */
+    text-transform: uppercase; /* Chữ hoa */
+    letter-spacing: 1px; /* Khoảng cách chữ */
+    white-space: nowrap; /* Không xuống dòng */
+    overflow: visible; /* Cho phép text hiển thị đầy đủ */
+    text-overflow: clip; /* Không hiển thị dấu ... */
+    text-align: center; /* Căn giữa text */
+    max-width: 100%; /* Giới hạn chiều rộng */
+}
+
+/* Separator với đường kẻ và hình thoi */
+.beach-header-separator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0.5rem 0; /* Khoảng cách trên dưới */
+    gap: 0.5rem; /* Khoảng cách giữa các phần tử */
+}
+
+.separator-line {
+    width: 60px; /* Chiều rộng đường kẻ */
+    height: 2px; /* Chiều cao đường kẻ */
+    background: linear-gradient(90deg, transparent, #3498db, transparent); /* Gradient màu */
+}
+
+.separator-diamond {
+    width: 8px; /* Chiều rộng hình thoi */
+    height: 8px; /* Chiều cao hình thoi */
+    background: #3498db; /* Màu xanh */
+    transform: rotate(45deg); /* Xoay 45 độ để tạo hình thoi */
+}
+
+/* Rank của bãi biển */
+.beach-header-rank {
+    font-size: 0.8rem; /* Kích thước font nhỏ */
+    font-weight: 600; /* Font đậm */
+    color: #e74c3c; /* Màu đỏ */
+    text-transform: uppercase; /* Chữ hoa */
+    letter-spacing: 1px; /* Khoảng cách chữ */
+    margin-top: 0.5rem; /* Khoảng cách trên */
+    white-space: nowrap; /* Không xuống dòng */
+    overflow: visible; /* Cho phép text hiển thị đầy đủ */
+    text-overflow: clip; /* Không hiển thị dấu ... */
+    text-align: center; /* Căn giữa text */
+    max-width: 100%; /* Giới hạn chiều rộng */
+}
+
+/* Navigation buttons và info */
+.beach-nav-left {
+    grid-column: 1; /* Cột trái */
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Căn trái trong cột để mũi tên nằm ngoài text */
+    width: 100%;
+    max-width: 250px; /* Giới hạn chiều rộng */
+    gap: 0.5rem; /* Tăng khoảng cách giữa mũi tên và chữ */
+}
+
+.beach-nav-right {
+    grid-column: 3; /* Cột phải */
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* Căn phải trong cột */
+    width: 100%;
+    max-width: 250px; /* Giới hạn chiều rộng */
+    gap: 1.5rem; /* Tăng khoảng cách giữa mũi tên và chữ */
+}
+
+/* Button điều hướng */
+.beach-nav-button {
+    width: 50px; /* Chiều rộng button */
+    height: 50px; /* Chiều cao button */
+    border-radius: 50%; /* Hình tròn */
+    border: 2px solid rgba(255, 255, 255, 0.8); /* Viền trắng trong suốt */
+    background: rgba(255, 255, 255, 0.9); /* Background trắng trong suốt */
+    color: #2c3e50; /* Màu chữ */
+    font-size: 1.2rem; /* Kích thước icon */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; /* Con trỏ pointer */
+    transition: all 0.3s ease; /* Hiệu ứng transition */
+    -webkit-backdrop-filter: blur(10px); /* Hiệu ứng blur cho Safari */
+    backdrop-filter: blur(10px); /* Hiệu ứng blur */
+    flex-shrink: 0; /* Không cho phép co lại */
+    position: relative; /* Vị trí tương đối */
+    z-index: 10; /* Đảm bảo luôn ở trên cùng */
+}
+
+.beach-nav-button:hover {
+    background: rgba(255, 255, 255, 1); /* Background trắng đục khi hover */
+    transform: scale(1.1); /* Phóng to khi hover */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Bóng đổ khi hover */
+}
+
+.beach-nav-button:active {
+    transform: scale(0.95); /* Thu nhỏ khi click */
+}
+
+/* Thông tin bãi biển kế tiếp */
+.beach-nav-info {
+    text-align: left; /* Căn trái text */
+    color: white; /* Màu chữ trắng */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Bóng đổ text */
+}
+
+.beach-nav-right .beach-nav-info {
+    text-align: right; /* Căn phải text cho bên phải */
+}
+
+.beach-nav-rank {
+    font-size: 0.9rem; /* Kích thước font nhỏ */
+    font-weight: 600; /* Font đậm */
+    color: #f39c12; /* Màu cam */
+    margin-bottom: 0.2rem; /* Khoảng cách dưới */
+}
+
+.beach-nav-name {
+    font-size: 1.1rem; /* Kích thước font vừa */
+    font-weight: 700; /* Font đậm */
+    margin-bottom: 0rem; /* Khoảng cách dưới */
+    text-transform: uppercase; /* Chữ hoa */
+    letter-spacing: 0.5px; /* Khoảng cách chữ */
+}
+
+.beach-nav-country {
+    font-size: 0.9rem; /* Kích thước font nhỏ */
+    font-weight: 400; /* Font thường */
+    opacity: 0.9; /* Độ trong suốt */
+    text-transform: uppercase; /* Chữ hoa */
+    letter-spacing: 0.5px; /* Khoảng cách chữ */
+}
+
+/* Responsive design cho tablet */
+@media (max-width: 768px) {
+    .beach-header-container {
+        height: 50vh; /* Giảm chiều cao trên tablet */
+        min-height: 350px;
+    }
+    
+    .beach-header-content {
+        left: 0;
+        right: 0;
+        bottom: 0.75rem; /* sát đáy hơn trên tablet */
+        padding: 0 1rem; /* Giảm padding */
+        grid-template-columns: 1fr; /* Chỉ 1 cột */
+        grid-template-rows: auto auto auto; /* 3 hàng */
+        gap: 0.75rem;
+    }
+    
+    .beach-header-main {
+        grid-column: 1; /* Cột duy nhất */
+        grid-row: 2; /* Hàng giữa */
+        order: 2; /* Thứ tự hiển thị */
+        width: 500px; /* Tăng kích thước cho tablet */
+        height: 220px; /* Tăng chiều cao cho tablet */
+    }
+    
+    .beach-header-card {
+        padding: 1.5rem 2rem; /* Giảm padding */
+        margin-bottom: 1rem; /* Khoảng cách dưới */
+        width: 500px; /* Tăng kích thước cho tablet */
+        height: 220px; /* Tăng chiều cao cho tablet */
+    }
+    
+    .beach-header-title {
+        font-size: 2rem; /* Giảm kích thước font */
+    }
+    
+    .beach-nav-left {
+        grid-column: 1; /* Cột duy nhất */
+        grid-row: 1; /* Hàng đầu */
+        order: 1; /* Thứ tự hiển thị */
+        position: relative; /* Vị trí tương đối */
+        justify-content: center; /* Căn giữa */
+        max-width: 200px; /* Giảm chiều rộng tối đa */
+    }
+    
+    .beach-nav-right {
+        grid-column: 1; /* Cột duy nhất */
+        grid-row: 3; /* Hàng cuối */
+        order: 3; /* Thứ tự hiển thị */
+        position: relative; /* Vị trí tương đối */
+        justify-content: center; /* Căn giữa */
+        max-width: 200px; /* Giảm chiều rộng tối đa */
+    }
+    
+    .beach-nav-button {
+        width: 40px; /* Giảm kích thước button */
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .beach-nav-name {
+        font-size: 1rem; /* Giảm kích thước font */
+    }
+}
+
+/* Responsive design cho mobile */
+@media (max-width: 576px) {
+    .beach-header-container {
+        height: 40vh; /* Giảm chiều cao trên mobile */
+        min-height: 300px;
+    }
+    
+    .beach-header-content {
+        bottom: 0.5rem; /* sát đáy hơn */
+        gap: 0.5rem; /* Giảm khoảng cách */
+    }
+    
+    .beach-header-main {
+        width: 350px; /* Tăng kích thước cho mobile */
+        height: 180px; /* Tăng chiều cao cho mobile */
+    }
+    
+    .beach-header-card {
+        padding: 1rem 1.5rem; /* Giảm padding */
+        margin: 0 0.5rem; /* Margin nhỏ */
+        width: 350px; /* Tăng kích thước cho mobile */
+        height: 180px; /* Tăng chiều cao cho mobile */
+    }
+    
+    .beach-header-title {
+        font-size: 1.5rem; /* Giảm kích thước font */
+        letter-spacing: 1px; /* Giảm khoảng cách chữ */
+    }
+    
+    .beach-header-country {
+        font-size: 1rem; /* Giảm kích thước font */
+    }
+    
+    .beach-nav-left,
+    .beach-nav-right {
+        max-width: 150px; /* Giảm chiều rộng tối đa */
+    }
+    
+    .beach-nav-button {
+        width: 35px; /* Giảm kích thước button */
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .beach-nav-info {
+        display: none; /* Ẩn thông tin trên mobile để tiết kiệm không gian */
+    }
+    
+    .separator-line {
+        width: 40px; /* Giảm chiều rộng đường kẻ */
+    }
+}
+
+/* Animation cho loading */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.beach-header-card {
+    animation: fadeIn 0.6s ease-out; /* Animation fade in */
+}
+
+/* Hover effects cho navigation */
+.beach-nav-left:hover,
+.beach-nav-right:hover {
+    transform: translateY(-2px); /* Di chuyển lên trên khi hover */
+    transition: transform 0.3s ease;
+}
