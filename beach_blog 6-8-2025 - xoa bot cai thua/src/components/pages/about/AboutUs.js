@@ -5,18 +5,13 @@ const AboutUs = () => {
   return (
     <div className="about-us-container">
       <div className="about-content">
-        {/* Header Section */}
-        {/* <div className="about-header">
-          <h1 className="main-title">ABOUT US</h1>
-          <h2 className="subtitle">INSPIRING EPIC BEACH DAYS FOR OVER 7 YEARS</h2>
-        </div> */}
 
         {/* Story Section */}
         <div className="story-section">
           <h3>Our story</h3>
           <div className="story-content">
             <p>
-              The idea for The World's 50 Best Beaches was sparked by our genuine passion for the beach. 
+              The idea for The World's Best Beaches was sparked by our genuine passion for the beach. 
               As avid beach enthusiasts and travellers ourselves, we've had the privilege of experiencing 
               countless beaches across the globe. Yet, amidst the vast array of stunning shorelines, we 
               realized that discovering and experiencing truly exceptional beaches is far more difficult than it seems.
@@ -30,7 +25,7 @@ const AboutUs = () => {
             </p>
             <p>
               As beach lovers ourselves, we understand the amazing impact that a truly exceptional beach 
-              can have on one's mood and sense of well-being. It is our hope that through The World's 50 
+              can have on one's mood and sense of well-being. It is our hope that through The World's 
               Best Beaches, we can inspire others to embark on their own beach adventures, to explore the 
               wonders of nature, and to experience the joy that can be found along the world's most stunning shorelines.
             </p>
@@ -133,33 +128,9 @@ const AboutUs = () => {
             </div>
           </div>
         </div>
-
-        {/* Download Section */}
-        {/* <div className="download-section">
-          <h4>Download Complete Information</h4>
-          <div className="download-buttons">
-            <button className="btn btn-primary" onClick={() => downloadFile('pdf')}>
-              📄 Download PDF
-            </button>
-            <button className="btn btn-success" onClick={() => downloadFile('doc')}>
-              📝 Download DOC
-            </button>
-          </div>
-        </div> */}
       </div>
     </div>
   );
 };
-
-// Function to handle file download
-// const downloadFile = (type) => {
-//   // This would typically connect to your backend API
-//   // For now, we'll show an alert
-//   if (type === 'pdf') {
-//     alert('PDF download feature will be implemented with backend integration');
-//   } else {
-//     alert('DOC download feature will be implemented with backend integration');
-//   }
-// };
 
 export default AboutUs;
