@@ -1,6 +1,56 @@
-# Getting Started with Create React App
+# Beauty of Beaches
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based web application showcasing the most beautiful beaches in the world with admin management system.
+
+## Features
+
+- **Frontend**: React.js with Bootstrap for responsive design
+- **Backend**: PHP with MySQL database
+- **Admin Panel**: Complete CRUD operations for beaches, galleries, and feedback
+- **Gallery Management**: Image management system
+- **User Feedback**: Customer review system
+
+## Quick Start
+
+### Prerequisites
+- Node.js (v14 or higher)
+- PHP (v7.4 or higher)
+- MySQL/MAMP
+
+### Installation
+
+1. **Clone the repository**
+```bash
+git clone <repository-url>
+cd beauty-of-beaches
+```
+
+2. **Install dependencies**
+```bash
+npm install
+```
+
+3. **Start the development server**
+```bash
+npm start
+```
+
+4. **Start PHP server**
+```bash
+cd php
+php -S localhost:8000
+```
+
+5. **Access the application**
+- Frontend: http://localhost:3000
+- Admin Panel: http://localhost:3000/admin/login
+- API: http://localhost:8000/api/
+
+## Admin Access
+- Username: `admin`
+- Password: `123456`
+
+## Available Scripts
 
 ## Available Scripts
 

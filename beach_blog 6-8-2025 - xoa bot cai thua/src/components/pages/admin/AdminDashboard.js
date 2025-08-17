@@ -135,6 +135,12 @@ const AdminDashboard = () => {
                     </Link>
                   </Col>
                   <Col md={3} className="mb-3">
+                    <Link to="/admin/galleries" className="btn btn-success w-100">
+                      <i className="fas fa-images me-2"></i>
+                      Manage Galleries
+                    </Link>
+                  </Col>
+                  <Col md={3} className="mb-3">
                     <Link to="/admin/feedback" className="btn btn-warning w-100">
                       <i className="fas fa-comments me-2"></i>
                       Review Feedback
@@ -143,11 +149,6 @@ const AdminDashboard = () => {
                   <Col md={3} className="mb-3">
                     <Link to="/admin/stats" className="btn btn-info w-100">
                       <i className="fas fa-chart-bar me-2"></i>
-                      View Statistics
-                    </Link>
-                  </Col>
-                  <Col md={3} className="mb-3">
-                    <Link to="/admin/stats" className="btn btn-info w-100">
                       View Statistics
                     </Link>
                   </Col>

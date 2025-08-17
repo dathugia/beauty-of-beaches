@@ -45,16 +45,13 @@ function handleLogin($conn, $input) {
     
     // Tìm admin trong database
     $stmt = $conn->prepare("SELECT id, username, password_hash, email FROM admins WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $stmt->execute([$username]);
+    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($result->num_rows === 0) {
+    if (!$admin) {
         echo json_encode(['success' => false, 'message' => 'Invalid username or password']);
         return;
     }
-    
-    $admin = $result->fetch_assoc();
     
     // Verify password
     if (password_verify($password, $admin['password_hash'])) {
@@ -64,13 +61,11 @@ function handleLogin($conn, $input) {
         
         // Lưu session vào database
         $stmt = $conn->prepare("INSERT INTO admin_sessions (admin_id, session_token, expires_at) VALUES (?, ?, ?)");
-        $stmt->bind_param("iss", $admin['id'], $session_token, $expires_at);
-        $stmt->execute();
+        $stmt->execute([$admin['id'], $session_token, $expires_at]);
         
         // Cập nhật last_login
         $stmt = $conn->prepare("UPDATE admins SET last_login = NOW() WHERE id = ?");
-        $stmt->bind_param("i", $admin['id']);
-        $stmt->execute();
+        $stmt->execute([$admin['id']]);
         
         echo json_encode([
             'success' => true,
@@ -93,8 +88,7 @@ function handleLogout($conn, $input) {
     if (!empty($session_token)) {
         // Xóa session
         $stmt = $conn->prepare("DELETE FROM admin_sessions WHERE session_token = ?");
-        $stmt->bind_param("s", $session_token);
-        $stmt->execute();
+        $stmt->execute([$session_token]);
     }
     
     echo json_encode(['success' => true, 'message' => 'Logout successful']);
@@ -115,12 +109,10 @@ function handleVerify($conn, $input) {
         JOIN admin_sessions s ON a.id = s.admin_id 
         WHERE s.session_token = ? AND s.expires_at > NOW()
     ");
-    $stmt->bind_param("s", $session_token);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    $stmt->execute([$session_token]);
+    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if ($result->num_rows > 0) {
-        $admin = $result->fetch_assoc();
+    if ($admin) {
         echo json_encode([
             'success' => true,
             'admin' => $admin
@@ -129,6 +121,4 @@ function handleVerify($conn, $input) {
         echo json_encode(['success' => false, 'message' => 'Invalid or expired session']);
     }
 }
-
-$conn->close();
 ?>

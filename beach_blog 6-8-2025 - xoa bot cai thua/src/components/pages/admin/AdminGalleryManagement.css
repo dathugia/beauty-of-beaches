@@ -1,0 +1,289 @@
+.admin-gallery-management {
+  padding: 120px 0 20px 0; /* Tăng thêm padding-top để tránh header */
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.admin-gallery-management .card {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.admin-gallery-management .card-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px 15px 0 0 !important;
+  border: none;
+  padding: 20px;
+}
+
+.admin-gallery-management .card-header h4 {
+  margin: 0;
+  font-weight: 600;
+}
+
+.admin-gallery-management .card-body {
+  padding: 30px;
+}
+
+.admin-gallery-management h1 {
+  color: white;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.admin-gallery-management p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.1rem;
+}
+
+.admin-gallery-management .btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  border-radius: 25px;
+  padding: 12px 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.admin-gallery-management .btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.admin-gallery-management .btn-secondary {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 25px;
+  padding: 12px 25px;
+  font-weight: 600;
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.admin-gallery-management .btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.admin-gallery-management .table {
+  margin-bottom: 0;
+}
+
+.admin-gallery-management .table th {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: none;
+  padding: 15px 10px;
+  font-weight: 600;
+  color: #495057;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+.admin-gallery-management .table td {
+  padding: 15px 10px;
+  vertical-align: middle;
+  border-color: #f1f3f4;
+}
+
+.admin-gallery-management .table tbody tr:hover {
+  background: rgba(102, 126, 234, 0.05);
+  transform: scale(1.01);
+  transition: all 0.2s ease;
+}
+
+.admin-gallery-management .btn-outline-primary {
+  border-color: #667eea;
+  color: #667eea;
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.admin-gallery-management .btn-outline-primary:hover {
+  background: #667eea;
+  border-color: #667eea;
+  transform: translateY(-1px);
+}
+
+.admin-gallery-management .btn-outline-danger {
+  border-color: #dc3545;
+  color: #dc3545;
+  border-radius: 20px;
+  padding: 8px 15px;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.admin-gallery-management .btn-outline-danger:hover {
+  background: #dc3545;
+  border-color: #dc3545;
+  transform: translateY(-1px);
+}
+
+.admin-gallery-management .badge {
+  font-size: 0.75rem;
+  padding: 5px 8px;
+  border-radius: 12px;
+}
+
+.admin-gallery-management .modal-content {
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.admin-gallery-management .modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px 15px 0 0;
+  border: none;
+  padding: 20px 30px;
+}
+
+.admin-gallery-management .modal-title {
+  font-weight: 600;
+}
+
+.admin-gallery-management .modal-body {
+  padding: 30px;
+}
+
+.admin-gallery-management .modal-footer {
+  border: none;
+  padding: 20px 30px 30px;
+}
+
+.admin-gallery-management .form-label {
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.admin-gallery-management .form-control,
+.admin-gallery-management .form-select {
+  border: 2px solid #e9ecef;
+  border-radius: 10px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.admin-gallery-management .form-control:focus,
+.admin-gallery-management .form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.admin-gallery-management .alert {
+  border: none;
+  border-radius: 10px;
+  padding: 15px 20px;
+  font-weight: 500;
+}
+
+.admin-gallery-management .alert-success {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+}
+
+.admin-gallery-management .alert-danger {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+  color: #721c24;
+}
+
+/* Column widths */
+.admin-gallery-management .col-id {
+  width: 60px;
+}
+
+.admin-gallery-management .col-beach {
+  width: 200px;
+}
+
+.admin-gallery-management .col-image {
+  width: 120px;
+}
+
+.admin-gallery-management .col-caption {
+  width: 250px;
+}
+
+.admin-gallery-management .col-uploaded {
+  width: 120px;
+}
+
+.admin-gallery-management .col-actions {
+  width: 120px;
+}
+
+/* Image preview styles */
+.admin-gallery-management .image-preview {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Loading spinner */
+.admin-gallery-management .spinner-border {
+  color: #667eea;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .admin-gallery-management {
+    padding: 80px 0 20px 0; /* Giảm padding cho mobile */
+  }
+  
+  .admin-gallery-management .card-body {
+    padding: 20px;
+  }
+  
+  .admin-gallery-management .modal-body {
+    padding: 20px;
+  }
+  
+  .admin-gallery-management .table-responsive {
+    font-size: 0.9rem;
+  }
+  
+  .admin-gallery-management .btn {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Đảm bảo header không đè lên nội dung */
+.admin-gallery-management .container-fluid {
+  position: relative;
+  z-index: 1;
+}
+
+/* Tăng khoảng cách cho header section */
+.admin-gallery-management .mb-4 {
+  margin-top: 20px;
+}
+
+/* Đảm bảo nội dung không bị header đè */
+.admin-gallery-management {
+  position: relative;
+  z-index: 1;
+}
+
+/* Tăng khoảng cách cho các button trong header section */
+.admin-gallery-management .d-flex.justify-content-between {
+  margin-top: 10px;
+}
+
+/* Đảm bảo button không bị đè */
+.admin-gallery-management .btn {
+  position: relative;
+  z-index: 2;
+}
