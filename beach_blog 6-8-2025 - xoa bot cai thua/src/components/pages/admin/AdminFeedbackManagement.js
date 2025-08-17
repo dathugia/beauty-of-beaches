@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Button, Table, Badge, Modal, Form, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Button, Table, Modal, Form, Alert, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import './AdminFeedbackManagement.css';
 
 const AdminFeedbackManagement = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [selectedFeedback, setSelectedFeedback] = useState(null);
   const [message, setMessage] = useState('');
+  const [messageType, setMessageType] = useState('success');
+  const [filter, setFilter] = useState('all'); // all, pending, approved, rejected
 
   useEffect(() => {
     fetchFeedbacks();
@@ -16,13 +18,18 @@ const AdminFeedbackManagement = () => {
 
   const fetchFeedbacks = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/admin_feedback.php');
+      const response = await fetch('http://localhost:8000/api/admin_feedback.php?action=get_all');
       const data = await response.json();
       if (data.success) {
         setFeedbacks(data.feedbacks);
+      } else {
+        setMessage('Error loading feedbacks: ' + data.message);
+        setMessageType('danger');
       }
     } catch (error) {
       console.error('Error fetching feedbacks:', error);
+      setMessage('Error loading feedbacks');
+      setMessageType('danger');
     }
     setLoading(false);
   };
@@ -31,16 +38,24 @@ const AdminFeedbackManagement = () => {
     try {
       const response = await fetch('http://localhost:8000/api/admin_feedback.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'credentials': 'include'
+        },
         body: JSON.stringify({ action: 'approve', feedback_id: feedbackId })
       });
       const data = await response.json();
       if (data.success) {
         setMessage('Feedback approved successfully!');
+        setMessageType('success');
         fetchFeedbacks(); // Refresh list
+      } else {
+        setMessage('Error approving feedback: ' + data.message);
+        setMessageType('danger');
       }
     } catch (error) {
       setMessage('Error approving feedback');
+      setMessageType('danger');
     }
   };
 
@@ -48,16 +63,24 @@ const AdminFeedbackManagement = () => {
     try {
       const response = await fetch('http://localhost:8000/api/admin_feedback.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'credentials': 'include'
+        },
         body: JSON.stringify({ action: 'reject', feedback_id: feedbackId })
       });
       const data = await response.json();
       if (data.success) {
         setMessage('Feedback rejected successfully!');
+        setMessageType('success');
         fetchFeedbacks(); // Refresh list
+      } else {
+        setMessage('Error rejecting feedback: ' + data.message);
+        setMessageType('danger');
       }
     } catch (error) {
       setMessage('Error rejecting feedback');
+      setMessageType('danger');
     }
   };
 
@@ -66,27 +89,53 @@ const AdminFeedbackManagement = () => {
       try {
         const response = await fetch('http://localhost:8000/api/admin_feedback.php', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'credentials': 'include'
+          },
           body: JSON.stringify({ action: 'delete', feedback_id: feedbackId })
         });
         const data = await response.json();
         if (data.success) {
           setMessage('Feedback deleted successfully!');
+          setMessageType('success');
           fetchFeedbacks(); // Refresh list
+        } else {
+          setMessage('Error deleting feedback: ' + data.message);
+          setMessageType('danger');
         }
       } catch (error) {
         setMessage('Error deleting feedback');
+        setMessageType('danger');
       }
     }
   };
 
-  const showFeedbackDetail = (feedback) => {
+  const handleViewDetails = (feedback) => {
     setSelectedFeedback(feedback);
     setShowModal(true);
   };
 
-  const renderStars = (rating) => {
-    return '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
+  const getFilteredFeedbacks = () => {
+    switch (filter) {
+      case 'pending':
+        return feedbacks.filter(f => !f.is_approved);
+      case 'approved':
+        return feedbacks.filter(f => f.is_approved);
+      case 'rejected':
+        return feedbacks.filter(f => f.is_approved === false);
+      default:
+        return feedbacks;
+    }
+  };
+
+  const getStatusBadge = (isApproved) => {
+    if (isApproved === null || isApproved === undefined) {
+      return <Badge bg="warning">Pending</Badge>;
+    }
+    return isApproved ? 
+      <Badge bg="success">Approved</Badge> : 
+      <Badge bg="danger">Rejected</Badge>;
   };
 
   if (loading) {
@@ -101,203 +150,264 @@ const AdminFeedbackManagement = () => {
     );
   }
 
+  const filteredFeedbacks = getFilteredFeedbacks();
+
   return (
     <div className="admin-feedback-management">
       <Container fluid>
         {/* Header */}
-        <Row className="admin-header">
+        <Row className="mb-4">
           <Col>
-            <h1>Feedback Management</h1>
-            <p>Review and manage user feedback</p>
-          </Col>
-          <Col xs="auto">
-            <Link to="/admin/dashboard" className="btn btn-outline-primary">
-              ← Back to Dashboard
-            </Link>
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <h1>Feedback Management</h1>
+                <p>Manage all user feedback and reviews</p>
+              </div>
+              <Link to="/admin/dashboard" className="btn btn-secondary">
+                <i className="fas fa-arrow-left me-2"></i>
+                Back to Dashboard
+              </Link>
+            </div>
           </Col>
         </Row>
 
+        {/* Message Alert */}
         {message && (
-          <Alert variant="info" onClose={() => setMessage('')} dismissible>
-            {message}
-          </Alert>
+          <Row className="mb-3">
+            <Col>
+              <Alert variant={messageType} onClose={() => setMessage('')} dismissible>
+                {message}
+              </Alert>
+            </Col>
+          </Row>
         )}
 
-        {/* Stats Cards */}
-        <Row className="mb-4">
-          <Col md={3}>
-            <Card className="stat-card">
+        {/* Filter Controls */}
+        <Row className="mb-3">
+          <Col>
+            <Card>
               <Card.Body>
-                <Card.Title>Total Feedback</Card.Title>
-                <Card.Text className="stat-number">{feedbacks.length}</Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={3}>
-            <Card className="stat-card">
-              <Card.Body>
-                <Card.Title>Pending Review</Card.Title>
-                <Card.Text className="stat-number">
-                  {feedbacks.filter(f => !f.is_approved).length}
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={3}>
-            <Card className="stat-card">
-              <Card.Body>
-                <Card.Title>Approved</Card.Title>
-                <Card.Text className="stat-number">
-                  {feedbacks.filter(f => f.is_approved).length}
-                </Card.Text>
-              </Card.Body>
-            </Card>
-          </Col>
-          <Col md={3}>
-            <Card className="stat-card">
-              <Card.Body>
-                <Card.Title>Average Rating</Card.Title>
-                <Card.Text className="stat-number">
-                  {(feedbacks.reduce((sum, f) => sum + f.rating, 0) / feedbacks.length || 0).toFixed(1)}/5
-                </Card.Text>
+                <div className="d-flex justify-content-between align-items-center">
+                  <div>
+                    <h5 className="mb-0">Filters</h5>
+                  </div>
+                  <div className="btn-group" role="group">
+                    <Button 
+                      variant={filter === 'all' ? 'primary' : 'outline-primary'}
+                      onClick={() => setFilter('all')}
+                    >
+                      All ({feedbacks.length})
+                    </Button>
+                    <Button 
+                      variant={filter === 'pending' ? 'primary' : 'outline-primary'}
+                      onClick={() => setFilter('pending')}
+                    >
+                      Pending ({feedbacks.filter(f => !f.is_approved).length})
+                    </Button>
+                    <Button 
+                      variant={filter === 'approved' ? 'primary' : 'outline-primary'}
+                      onClick={() => setFilter('approved')}
+                    >
+                      Approved ({feedbacks.filter(f => f.is_approved).length})
+                    </Button>
+                  </div>
+                </div>
               </Card.Body>
             </Card>
           </Col>
         </Row>
 
-        {/* Feedback Table */}
-        <Card>
-          <Card.Header>
-            <h4>All Feedback</h4>
-          </Card.Header>
-          <Card.Body>
-            <Table responsive striped hover>
-              <thead>
-                <tr>
-                  <th>Beach</th>
-                  <th>Visitor</th>
-                  <th>Rating</th>
-                  <th>Comment</th>
-                  <th>Status</th>
-                  <th>Date</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {feedbacks.map((feedback) => (
-                  <tr key={feedback.id}>
-                    <td>{feedback.beach_name}</td>
-                    <td>{feedback.visitor_name}</td>
-                    <td>
-                      <span title={`${feedback.rating} stars`}>
-                        {renderStars(feedback.rating)}
-                      </span>
-                    </td>
-                    <td>
-                      <div className="comment-preview">
-                        {feedback.comment.length > 50 
-                          ? `${feedback.comment.substring(0, 50)}...` 
-                          : feedback.comment
-                        }
-                        {feedback.comment.length > 50 && (
+        {/* Feedbacks Table */}
+        <Row>
+          <Col>
+            <Card>
+              <Card.Header>
+                <h4>All Feedback ({filteredFeedbacks.length})</h4>
+              </Card.Header>
+              <Card.Body>
+                <Table responsive striped hover>
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Beach</th>
+                      <th>Visitor</th>
+                      <th>Rating</th>
+                      <th>Status</th>
+                      <th>Date</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredFeedbacks.map((feedback) => (
+                      <tr key={feedback.id}>
+                        <td>{feedback.id}</td>
+                        <td>
+                          <strong>{feedback.beach_name}</strong>
+                        </td>
+                        <td>
+                          <div>{feedback.visitor_name}</div>
+                          <small className="text-muted">{feedback.email}</small>
+                        </td>
+                        <td>
+                          <div className="d-flex align-items-center">
+                            <span className="me-2">{feedback.rating}/5</span>
+                            <div className="stars">
+                              {[...Array(5)].map((_, i) => (
+                                <i 
+                                  key={i} 
+                                  className={`fas fa-star ${i < feedback.rating ? 'text-warning' : 'text-muted'}`}
+                                  style={{ fontSize: '0.875rem' }}
+                                ></i>
+                              ))}
+                            </div>
+                          </div>
+                        </td>
+                        <td>{getStatusBadge(feedback.is_approved)}</td>
+                        <td>{new Date(feedback.created_at).toLocaleDateString()}</td>
+                        <td>
                           <Button 
-                            variant="link" 
+                            variant="outline-info" 
                             size="sm" 
-                            onClick={() => showFeedbackDetail(feedback)}
+                            onClick={() => handleViewDetails(feedback)}
+                            className="me-1"
+                            title="View Details"
                           >
-                            View Full
+                            <i className="fas fa-eye"></i>
                           </Button>
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      {feedback.is_approved ? (
-                        <Badge bg="success">Approved</Badge>
-                      ) : (
-                        <Badge bg="warning">Pending</Badge>
-                      )}
-                    </td>
-                    <td>{new Date(feedback.created_at).toLocaleDateString()}</td>
-                    <td>
-                      <div className="action-buttons">
-                        {!feedback.is_approved && (
-                          <>
+                          {!feedback.is_approved && (
                             <Button 
-                              variant="success" 
+                              variant="outline-success" 
                               size="sm" 
                               onClick={() => handleApprove(feedback.id)}
                               className="me-1"
+                              title="Approve"
                             >
-                              Approve
+                              <i className="fas fa-check"></i>
                             </Button>
+                          )}
+                          {feedback.is_approved !== false && (
                             <Button 
-                              variant="danger" 
+                              variant="outline-warning" 
                               size="sm" 
                               onClick={() => handleReject(feedback.id)}
                               className="me-1"
+                              title="Reject"
                             >
-                              Reject
+                              <i className="fas fa-times"></i>
                             </Button>
-                          </>
-                        )}
-                        <Button 
-                          variant="outline-danger" 
-                          size="sm" 
-                          onClick={() => handleDelete(feedback.id)}
-                        >
-                          Delete
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </Card.Body>
-        </Card>
-      </Container>
-
-      {/* Feedback Detail Modal */}
-      <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>Feedback Detail</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedFeedback && (
-            <div>
-              <Row>
-                <Col md={6}>
-                  <strong>Beach:</strong> {selectedFeedback.beach_name}
-                </Col>
-                <Col md={6}>
-                  <strong>Visitor:</strong> {selectedFeedback.visitor_name}
-                </Col>
-              </Row>
-              <Row className="mt-3">
-                <Col md={6}>
-                  <strong>Rating:</strong> {renderStars(selectedFeedback.rating)}
-                </Col>
-                <Col md={6}>
-                  <strong>Date:</strong> {new Date(selectedFeedback.created_at).toLocaleString()}
-                </Col>
-              </Row>
-              <Row className="mt-3">
-                <Col>
-                  <strong>Comment:</strong>
-                  <div className="mt-2 p-3 bg-light rounded">
-                    {selectedFeedback.comment}
+                          )}
+                          <Button 
+                            variant="outline-danger" 
+                            size="sm" 
+                            onClick={() => handleDelete(feedback.id)}
+                            title="Delete"
+                          >
+                            <i className="fas fa-trash"></i>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+                {filteredFeedbacks.length === 0 && (
+                  <div className="text-center text-muted py-4">
+                    <i className="fas fa-inbox fa-3x mb-3"></i>
+                    <p>No feedback found for the selected filter.</p>
                   </div>
-                </Col>
-              </Row>
-            </div>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+
+        {/* Feedback Details Modal */}
+        <Modal show={showModal} onHide={() => setShowModal(false)} size="lg">
+          <Modal.Header closeButton>
+            <Modal.Title>Feedback Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedFeedback && (
+              <div>
+                <Row>
+                  <Col md={6}>
+                    <h6>Beach</h6>
+                    <p className="text-muted">{selectedFeedback.beach_name}</p>
+                  </Col>
+                  <Col md={6}>
+                    <h6>Status</h6>
+                    <p>{getStatusBadge(selectedFeedback.is_approved)}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <h6>Visitor Name</h6>
+                    <p className="text-muted">{selectedFeedback.visitor_name}</p>
+                  </Col>
+                  <Col md={6}>
+                    <h6>Email</h6>
+                    <p className="text-muted">{selectedFeedback.email}</p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col md={6}>
+                    <h6>Rating</h6>
+                    <div className="d-flex align-items-center">
+                      <span className="me-2">{selectedFeedback.rating}/5</span>
+                      <div className="stars">
+                        {[...Array(5)].map((_, i) => (
+                          <i 
+                            key={i} 
+                            className={`fas fa-star ${i < selectedFeedback.rating ? 'text-warning' : 'text-muted'}`}
+                          ></i>
+                        ))}
+                      </div>
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <h6>Date</h6>
+                    <p className="text-muted">
+                      {new Date(selectedFeedback.created_at).toLocaleString()}
+                    </p>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <h6>Comment</h6>
+                    <p className="text-muted">{selectedFeedback.comment || 'No comment provided'}</p>
+                  </Col>
+                </Row>
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowModal(false)}>
+              Close
+            </Button>
+            {selectedFeedback && !selectedFeedback.is_approved && (
+              <Button 
+                variant="success" 
+                onClick={() => {
+                  handleApprove(selectedFeedback.id);
+                  setShowModal(false);
+                }}
+              >
+                Approve
+              </Button>
+            )}
+            {selectedFeedback && selectedFeedback.is_approved !== false && (
+              <Button 
+                variant="warning" 
+                onClick={() => {
+                  handleReject(selectedFeedback.id);
+                  setShowModal(false);
+                }}
+              >
+                Reject
+              </Button>
+            )}
+          </Modal.Footer>
+        </Modal>
+      </Container>
     </div>
   );
 };

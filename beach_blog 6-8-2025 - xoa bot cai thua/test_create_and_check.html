@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Create and Check</title>
+</head>
+<body>
+    <h2>Test Create Beach and Check Display</h2>
+    
+    <h3>Step 1: Create New Beach</h3>
+    <form id="createForm">
+        <p>Beach Name: <input type="text" id="name" value="Test Beach Auto" required></p>
+        <p>Region Name: <input type="text" id="region_name" value="Test Region Auto" required></p>
+        <p>City: <input type="text" id="city" value="Test City Auto" required></p>
+        <p>Country: <input type="text" id="country" value="Test Country Auto" required></p>
+        <p>Description: <input type="text" id="description" value="Test Description Auto"></p>
+        <p>Image URL: <input type="text" id="image_url" value="https://example.com/auto-image.jpg"></p>
+        <p>Rank: <input type="number" id="rank" value="15"></p>
+        <button type="submit">Create Beach</button>
+    </form>
+    
+    <h3>Step 2: Check All Beaches</h3>
+    <button onclick="checkAllBeaches()">Check All Beaches</button>
+    
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('createForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                action: 'create',
+                name: document.getElementById('name').value,
+                region_name: document.getElementById('region_name').value,
+                city: document.getElementById('city').value,
+                country: document.getElementById('country').value,
+                description: document.getElementById('description').value,
+                image_url: document.getElementById('image_url').value,
+                rank: document.getElementById('rank').value
+            };
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/admin_beach.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<h4>Create Result:</h4><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                    
+                if (result.success) {
+                    alert('Beach created successfully! Beach ID: ' + result.id + ', Region ID: ' + result.region_id + ', Region Name: ' + result.region_name);
+                    // Tự động check all beaches sau khi tạo
+                    setTimeout(checkAllBeaches, 1000);
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: red;">Error: ' + error.message + '</p>';
+            }
+        });
+        
+        async function checkAllBeaches() {
+            try {
+                const response = await fetch('http://localhost:8000/api/admin_beach.php?action=get_all');
+                const data = await response.json();
+                
+                if (data.success) {
+                    const beaches = data.beaches;
+                    let html = '<h4>All Beaches:</h4><table border="1"><tr><th>ID</th><th>Name</th><th>Region ID</th><th>Region Name</th><th>Country</th></tr>';
+                    
+                    beaches.forEach(beach => {
+                        html += `<tr>
+                            <td>${beach.id}</td>
+                            <td>${beach.name}</td>
+                            <td>${beach.region_id}</td>
+                            <td>${beach.region_name || 'NULL'}</td>
+                            <td>${beach.country || 'NULL'}</td>
+                        </tr>`;
+                    });
+                    
+                    html += '</table>';
+                    document.getElementById('result').innerHTML += html;
+                } else {
+                    document.getElementById('result').innerHTML += '<p style="color: red;">Error: ' + data.message + '</p>';
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML += '<p style="color: red;">Error: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>

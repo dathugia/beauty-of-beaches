@@ -3,6 +3,7 @@
   min-height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   padding: 100px 0 20px 0; /* Thêm padding-top để tránh bị header che */
+  margin-top: 60px; /* Thêm margin-top để tạo khoảng cách với navbar */
 }
 
 .admin-header {

@@ -130,17 +130,20 @@ const AdminDashboard = () => {
                 <Row>
                   <Col md={3} className="mb-3">
                     <Link to="/admin/beaches" className="btn btn-primary w-100">
+                      <i className="fas fa-umbrella-beach me-2"></i>
                       Manage Beaches
                     </Link>
                   </Col>
                   <Col md={3} className="mb-3">
-                    <Link to="/admin/gallery" className="btn btn-success w-100">
-                      Manage Gallery
+                    <Link to="/admin/feedback" className="btn btn-warning w-100">
+                      <i className="fas fa-comments me-2"></i>
+                      Review Feedback
                     </Link>
                   </Col>
                   <Col md={3} className="mb-3">
-                    <Link to="/admin/feedback" className="btn btn-warning w-100">
-                      Review Feedback
+                    <Link to="/admin/stats" className="btn btn-info w-100">
+                      <i className="fas fa-chart-bar me-2"></i>
+                      View Statistics
                     </Link>
                   </Col>
                   <Col md={3} className="mb-3">

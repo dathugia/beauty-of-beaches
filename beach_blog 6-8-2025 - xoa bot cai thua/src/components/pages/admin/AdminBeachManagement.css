@@ -1,0 +1,158 @@
+.admin-beach-management {
+  padding: 100px 0 20px 0; /* Tăng padding-top để tránh navbar */
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  margin-top: 60px; /* Thêm margin-top để tạo khoảng cách với navbar */
+}
+
+.admin-beach-management .card {
+  border: none;
+  box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  border-radius: 0.5rem;
+}
+
+.admin-beach-management .card-header {
+  background-color: #fff;
+  border-bottom: 1px solid #dee2e6;
+  font-weight: 600;
+  position: relative;
+  z-index: 10;
+}
+
+/* Đảm bảo header không bị đè */
+.admin-beach-management .d-flex.justify-content-between {
+  position: relative;
+  z-index: 5;
+}
+
+/* Table header styles moved above */
+
+.admin-beach-management .table td {
+  vertical-align: middle;
+  padding: 0.75rem;
+  word-wrap: break-word;
+  max-width: 200px;
+}
+
+.admin-beach-management .table th {
+  background-color: #f8f9fa;
+  border-top: none;
+  font-weight: 600;
+  color: #495057;
+  padding: 0.75rem;
+  white-space: nowrap;
+}
+
+.admin-beach-management .btn {
+  border-radius: 0.375rem;
+  font-weight: 500;
+}
+
+.admin-beach-management .badge {
+  font-size: 0.75rem;
+  padding: 0.375rem 0.5rem;
+}
+
+.admin-beach-management .modal-content {
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.admin-beach-management .form-control,
+.admin-beach-management .form-select {
+  border-radius: 0.375rem;
+  border: 1px solid #ced4da;
+}
+
+.admin-beach-management .form-control:focus,
+.admin-beach-management .form-select:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.admin-beach-management .alert {
+  border-radius: 0.5rem;
+  border: none;
+}
+
+.admin-beach-management .text-muted {
+  font-size: 0.875rem;
+}
+
+.admin-beach-management .small {
+  font-size: 0.75rem;
+}
+
+/* Specific column widths to prevent text overlap */
+.admin-beach-management .table .col-id {
+  width: 8%;
+}
+
+.admin-beach-management .table .col-rank {
+  width: 10%;
+}
+
+.admin-beach-management .table .col-name {
+  width: 20%;
+}
+
+.admin-beach-management .table .col-region {
+  width: 18%;
+}
+
+.admin-beach-management .table .col-city {
+  width: 12%;
+}
+
+.admin-beach-management .table .col-image {
+  width: 10%;
+}
+
+.admin-beach-management .table .col-created {
+  width: 12%;
+}
+
+.admin-beach-management .table .col-actions {
+  width: 10%;
+}
+
+/* Text overflow handling */
+.admin-beach-management .table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 150px;
+}
+
+.admin-beach-management .table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+.admin-beach-management .table .text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-beach-management .table-responsive {
+    font-size: 0.875rem;
+  }
+  
+  .admin-beach-management .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .admin-beach-management .d-flex {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .admin-beach-management .d-flex > div {
+    width: 100%;
+  }
+}

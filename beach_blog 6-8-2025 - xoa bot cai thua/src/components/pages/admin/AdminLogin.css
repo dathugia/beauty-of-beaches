@@ -5,6 +5,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 100px 20px 20px 20px; /* Tăng padding-top để tránh navbar */
+  margin-top: 60px; /* Thêm margin-top để tạo khoảng cách với navbar */
 }
 
 .login-card {

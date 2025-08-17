@@ -1,8 +1,8 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With');
 
 require_once '../db/connect.php';
 
@@ -55,19 +55,42 @@ try {
     $stats['recent_feedback'] = $recent_feedback;
     
     // 5. Thống kê theo vùng
-    $region_stats_query = "
-        SELECT r.region_name, COUNT(b.id) as beach_count 
-        FROM regions r 
-        LEFT JOIN beaches b ON r.id = b.region_id 
-        GROUP BY r.id, r.region_name
-    ";
+            $region_stats_query = "
+            SELECT 
+                CASE 
+                    WHEN r.name LIKE '%NORTH%' THEN 'NORTH'
+                    WHEN r.name LIKE '%EAST%' THEN 'EAST'
+                    WHEN r.name LIKE '%SOUTH%' THEN 'SOUTH'
+                    WHEN r.name LIKE '%WEST%' THEN 'WEST'
+                    ELSE 'OTHER'
+                END as region_name,
+                COUNT(b.id) as beach_count
+            FROM regions r
+            LEFT JOIN beaches b ON r.id = b.region_id
+            GROUP BY 
+                CASE 
+                    WHEN r.name LIKE '%NORTH%' THEN 'NORTH'
+                    WHEN r.name LIKE '%EAST%' THEN 'EAST'
+                    WHEN r.name LIKE '%SOUTH%' THEN 'SOUTH'
+                    WHEN r.name LIKE '%WEST%' THEN 'WEST'
+                    ELSE 'OTHER'
+                END
+            HAVING region_name != 'OTHER'
+            ORDER BY 
+                CASE region_name
+                    WHEN 'NORTH' THEN 1
+                    WHEN 'EAST' THEN 2
+                    WHEN 'SOUTH' THEN 3
+                    WHEN 'WEST' THEN 4
+                END
+        ";
     $region_result = $conn->query($region_stats_query);
     $region_stats = [];
     while ($row = $region_result->fetch_assoc()) {
-        $region_stats[] = [
-            'region_name' => $row['region_name'],
-            'beach_count' => $row['beach_count']
-        ];
+                    $region_stats[] = [
+                'region_name' => $row['region_name'],
+                'beach_count' => $row['beach_count']
+            ];
     }
     $stats['region_stats'] = $region_stats;
     

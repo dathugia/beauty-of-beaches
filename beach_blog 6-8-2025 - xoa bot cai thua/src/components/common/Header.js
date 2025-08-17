@@ -8,13 +8,29 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginForm, setLoginForm] = useState({
-    username: "admin",
+    username: "admin1",
     password: "123456"
   });
+  const [rememberPassword, setRememberPassword] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
+    // Load saved credentials if remember password is enabled
+    const savedCredentials = localStorage.getItem('adminCredentials');
+    if (savedCredentials) {
+      try {
+        const credentials = JSON.parse(savedCredentials);
+        setLoginForm({
+          username: credentials.username || 'admin',
+          password: credentials.password || '123456'
+        });
+        setRememberPassword(true);
+      } catch (err) {
+        localStorage.removeItem('adminCredentials');
+      }
+    }
+
     // Bắt sự kiện scroll
     const handleScroll = () => {
       const scrollY = window.scrollY;
@@ -52,23 +68,37 @@ const Header = () => {
       }
       
       // Nếu không có trong localStorage, kiểm tra session
-      try {
-        const response = await fetch('http://localhost:8000/api/admin_auth.php', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ action: 'verify' })
-        });
-        
-        const data = await response.json();
-        if (data.success) {
-          setIsLoggedIn(true);
-          // Save to localStorage for future checks
-          localStorage.setItem('adminData', JSON.stringify(data.admin));
+      const adminToken = localStorage.getItem('adminToken');
+      if (adminToken) {
+        try {
+          const response = await fetch('http://localhost:8000/api/admin_auth.php', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+            body: JSON.stringify({ 
+              action: 'verify',
+              session_token: adminToken
+            })
+          });
+          
+          const data = await response.json();
+          if (data.success) {
+            setIsLoggedIn(true);
+            // Save to localStorage for future checks
+            localStorage.setItem('adminData', JSON.stringify(data.admin));
+          } else {
+            // Session expired, clear tokens
+            localStorage.removeItem('adminData');
+            localStorage.removeItem('adminToken');
+          }
+        } catch (error) {
+          console.error('Error checking admin status:', error);
+          // Clear tokens on error
+          localStorage.removeItem('adminData');
+          localStorage.removeItem('adminToken');
         }
-      } catch (error) {
-        console.error('Error checking admin status:', error);
       }
     };
 
@@ -100,6 +130,7 @@ const Header = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(requestBody)
       });
       
@@ -110,9 +141,21 @@ const Header = () => {
       if (data.success) {
         setIsLoggedIn(true);
         setShowLoginModal(false);
-        setLoginForm({ username: "", password: "" });
+        
+        // Save credentials if remember password is checked
+        if (rememberPassword) {
+          localStorage.setItem('adminCredentials', JSON.stringify({
+            username: loginForm.username,
+            password: loginForm.password
+          }));
+        } else {
+          localStorage.removeItem('adminCredentials');
+        }
+        
         // Save admin data to localStorage
         localStorage.setItem('adminData', JSON.stringify(data.admin));
+        localStorage.setItem('adminToken', data.admin.session_token);
+        
         // Redirect to admin dashboard
         window.location.href = '/admin/dashboard';
       } else {
@@ -126,13 +169,18 @@ const Header = () => {
 
   // Xử lý đăng xuất
   const handleLogout = async () => {
+    const adminToken = localStorage.getItem('adminToken');
     try {
       const response = await fetch('http://localhost:8000/api/admin_auth.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ action: 'logout' })
+        credentials: 'include',
+        body: JSON.stringify({ 
+          action: 'logout',
+          session_token: adminToken
+        })
       });
       
       const data = await response.json();
@@ -278,6 +326,8 @@ const Header = () => {
               <Form.Check
                 type="checkbox"
                 label="Remember password"
+                checked={rememberPassword}
+                onChange={(e) => setRememberPassword(e.target.checked)}
               />
             </Form.Group>
             

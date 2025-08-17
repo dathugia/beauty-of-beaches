@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Create Beach - Debug</title>
+</head>
+<body>
+    <h2>Test Create Beach - Debug</h2>
+    <form id="beachForm">
+        <p>Beach Name: <input type="text" id="name" value="Test Beach Debug" required></p>
+        <p>Region Name: <input type="text" id="region_name" value="Test Region Debug" required></p>
+        <p>City: <input type="text" id="city" value="Test City Debug" required></p>
+        <p>Country: <input type="text" id="country" value="Test Country Debug" required></p>
+        <p>Description: <input type="text" id="description" value="Test Description Debug"></p>
+        <p>Image URL: <input type="text" id="image_url" value="https://example.com/debug-image.jpg"></p>
+        <p>Rank: <input type="number" id="rank" value="10"></p>
+        <button type="submit">Create Beach</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('beachForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                action: 'create',
+                name: document.getElementById('name').value,
+                region_name: document.getElementById('region_name').value,
+                city: document.getElementById('city').value,
+                country: document.getElementById('country').value,
+                description: document.getElementById('description').value,
+                image_url: document.getElementById('image_url').value,
+                rank: document.getElementById('rank').value
+            };
+            
+            console.log('Sending data:', formData);
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/admin_beach.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                console.log('Response:', result);
+                
+                document.getElementById('result').innerHTML = 
+                    '<pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                    
+                if (result.success) {
+                    alert('Beach created successfully! Beach ID: ' + result.id + ', Region ID: ' + result.region_id);
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: red;">Error: ' + error.message + '</p>';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -39,6 +39,7 @@ const AdminLogin = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           action: 'login',
           username: loginForm.username,

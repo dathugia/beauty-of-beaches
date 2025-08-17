@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Beach Creation</title>
+</head>
+<body>
+    <h2>Test Create Beach</h2>
+    <form id="beachForm">
+        <p>Beach Name: <input type="text" id="name" value="Test Beach" required></p>
+        <p>Region Name (new): <input type="text" id="region_name" value="Test Region"></p>
+        <p>City: <input type="text" id="city" value="Test City"></p>
+        <p>Country: <input type="text" id="country" value="Test Country"></p>
+        <p>Description: <input type="text" id="description" value="Test Description"></p>
+        <p>Image URL: <input type="text" id="image_url" value="https://example.com/image.jpg"></p>
+        <p>Rank: <input type="number" id="rank" value="5"></p>
+        <button type="submit">Create Beach</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('beachForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                action: 'create',
+                name: document.getElementById('name').value,
+                region_name: document.getElementById('region_name').value,
+                city: document.getElementById('city').value,
+                country: document.getElementById('country').value,
+                description: document.getElementById('description').value,
+                image_url: document.getElementById('image_url').value,
+                rank: document.getElementById('rank').value
+            };
+            
+            try {
+                const response = await fetch('http://localhost:8000/api/admin_beach.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                document.getElementById('result').innerHTML = 
+                    '<pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                    
+                if (result.success) {
+                    alert('Beach created successfully!');
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: red;">Error: ' + error.message + '</p>';
+            }
+        });
+    </script>
+</body>
+</html>
