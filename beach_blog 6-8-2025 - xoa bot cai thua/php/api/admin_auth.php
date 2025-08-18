@@ -30,6 +30,9 @@ switch ($action) {
     case 'verify':
         handleVerify($conn, $input);
         break;
+    case 'refresh':
+        handleRefresh($conn, $input);
+        break;
     default:
         echo json_encode(['success' => false, 'message' => 'Invalid action']);
 }
@@ -55,13 +58,21 @@ function handleLogin($conn, $input) {
     
     // Verify password
     if (password_verify($password, $admin['password_hash'])) {
-        // Tạo session token
+        // Tạo session token và refresh token
         $session_token = bin2hex(random_bytes(32));
-        $expires_at = date('Y-m-d H:i:s', strtotime('+24 hours'));
+        $refresh_token = bin2hex(random_bytes(32));
         
-        // Lưu session vào database
-        $stmt = $conn->prepare("INSERT INTO admin_sessions (admin_id, session_token, expires_at) VALUES (?, ?, ?)");
-        $stmt->execute([$admin['id'], $session_token, $expires_at]);
+        // Tăng thời gian hết hạn lên 7 ngày thay vì 24 giờ
+        $expires_at = date('Y-m-d H:i:s', strtotime('+7 days'));
+        $refresh_expires_at = date('Y-m-d H:i:s', strtotime('+30 days'));
+        
+        // Xóa session cũ nếu có
+        $stmt = $conn->prepare("DELETE FROM admin_sessions WHERE admin_id = ?");
+        $stmt->execute([$admin['id']]);
+        
+        // Lưu session mới vào database
+        $stmt = $conn->prepare("INSERT INTO admin_sessions (admin_id, session_token, refresh_token, expires_at, refresh_expires_at) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$admin['id'], $session_token, $refresh_token, $expires_at, $refresh_expires_at]);
         
         // Cập nhật last_login
         $stmt = $conn->prepare("UPDATE admins SET last_login = NOW() WHERE id = ?");
@@ -74,7 +85,9 @@ function handleLogin($conn, $input) {
                 'id' => $admin['id'],
                 'username' => $admin['username'],
                 'email' => $admin['email'],
-                'session_token' => $session_token
+                'session_token' => $session_token,
+                'refresh_token' => $refresh_token,
+                'expires_at' => $expires_at
             ]
         ]);
     } else {
@@ -104,7 +117,7 @@ function handleVerify($conn, $input) {
     
     // Kiểm tra session
     $stmt = $conn->prepare("
-        SELECT a.id, a.username, a.email 
+        SELECT a.id, a.username, a.email, s.expires_at, s.refresh_token
         FROM admins a 
         JOIN admin_sessions s ON a.id = s.admin_id 
         WHERE s.session_token = ? AND s.expires_at > NOW()
@@ -113,12 +126,76 @@ function handleVerify($conn, $input) {
     $admin = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if ($admin) {
+        // Tự động refresh token nếu gần hết hạn (còn 1 ngày)
+        $expires = new DateTime($admin['expires_at']);
+        $now = new DateTime();
+        $diff = $expires->diff($now);
+        
+        if ($diff->days <= 1) {
+            // Tạo token mới
+            $new_session_token = bin2hex(random_bytes(32));
+            $new_expires_at = date('Y-m-d H:i:s', strtotime('+7 days'));
+            
+            $stmt = $conn->prepare("UPDATE admin_sessions SET session_token = ?, expires_at = ? WHERE session_token = ?");
+            $stmt->execute([$new_session_token, $new_expires_at, $session_token]);
+            
+            $admin['session_token'] = $new_session_token;
+            $admin['expires_at'] = $new_expires_at;
+        }
+        
         echo json_encode([
             'success' => true,
-            'admin' => $admin
+            'admin' => [
+                'id' => $admin['id'],
+                'username' => $admin['username'],
+                'email' => $admin['email'],
+                'session_token' => $admin['session_token'],
+                'expires_at' => $admin['expires_at']
+            ]
         ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid or expired session']);
+    }
+}
+
+function handleRefresh($conn, $input) {
+    $refresh_token = $input['refresh_token'] ?? '';
+    
+    if (empty($refresh_token)) {
+        echo json_encode(['success' => false, 'message' => 'No refresh token provided']);
+        return;
+    }
+    
+    // Kiểm tra refresh token
+    $stmt = $conn->prepare("
+        SELECT a.id, a.username, a.email, s.refresh_expires_at
+        FROM admins a 
+        JOIN admin_sessions s ON a.id = s.admin_id 
+        WHERE s.refresh_token = ? AND s.refresh_expires_at > NOW()
+    ");
+    $stmt->execute([$refresh_token]);
+    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if ($admin) {
+        // Tạo session token mới
+        $new_session_token = bin2hex(random_bytes(32));
+        $new_expires_at = date('Y-m-d H:i:s', strtotime('+7 days'));
+        
+        $stmt = $conn->prepare("UPDATE admin_sessions SET session_token = ?, expires_at = ? WHERE refresh_token = ?");
+        $stmt->execute([$new_session_token, $new_expires_at, $refresh_token]);
+        
+        echo json_encode([
+            'success' => true,
+            'admin' => [
+                'id' => $admin['id'],
+                'username' => $admin['username'],
+                'email' => $admin['email'],
+                'session_token' => $new_session_token,
+                'expires_at' => $new_expires_at
+            ]
+        ]);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Invalid or expired refresh token']);
     }
 }
 ?>

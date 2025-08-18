@@ -13,12 +13,14 @@ CREATE TABLE IF NOT EXISTS admins (
     is_active BOOLEAN DEFAULT TRUE
 );
 
--- Tạo bảng admin_sessions
+-- Tạo bảng admin_sessions với refresh token
 CREATE TABLE IF NOT EXISTS admin_sessions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     admin_id INT NOT NULL,
     session_token VARCHAR(64) UNIQUE NOT NULL,
+    refresh_token VARCHAR(64) UNIQUE NOT NULL,
     expires_at TIMESTAMP NOT NULL,
+    refresh_expires_at TIMESTAMP NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (admin_id) REFERENCES admins(id) ON DELETE CASCADE
 );

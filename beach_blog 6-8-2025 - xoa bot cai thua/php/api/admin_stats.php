@@ -23,9 +23,14 @@ try {
     $beaches_count = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
     // Get total feedback
-    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM feedback");
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM beach_feedback");
     $stmt->execute();
     $feedback_count = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+    // Get pending feedback (is_approved IS NULL)
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM beach_feedback WHERE is_approved IS NULL");
+    $stmt->execute();
+    $pending_count = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
     // Get total images
     $stmt = $conn->prepare("SELECT COUNT(*) as total FROM galleries");
@@ -33,17 +38,17 @@ try {
     $images_count = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
     // Get average rating
-    $stmt = $conn->prepare("SELECT AVG(rating) as average FROM feedback WHERE rating IS NOT NULL");
+    $stmt = $conn->prepare("SELECT AVG(rating) as average FROM beach_feedback WHERE rating IS NOT NULL AND is_approved = 1");
     $stmt->execute();
     $avg_rating = $stmt->fetch(PDO::FETCH_ASSOC)['average'];
     $avg_rating = $avg_rating ? round($avg_rating, 1) : 0;
 
     // Get recent feedback
     $stmt = $conn->prepare("
-        SELECT f.*, b.name as beach_name 
-        FROM feedback f 
-        LEFT JOIN beaches b ON f.beach_id = b.id 
-        ORDER BY f.created_at DESC 
+        SELECT bf.*, b.name as beach_name 
+        FROM beach_feedback bf 
+        LEFT JOIN beaches b ON bf.beach_id = b.id 
+        ORDER BY bf.created_at DESC 
         LIMIT 5
     ");
     $stmt->execute();
@@ -54,7 +59,9 @@ try {
         'stats' => [
             'total_beaches' => $beaches_count,
             'total_feedback' => $feedback_count,
+            'pending_feedback' => $pending_count,
             'total_images' => $images_count,
+            'avg_rating' => $avg_rating,
             'average_rating' => $avg_rating,
             'recent_feedback' => $recent_feedback
         ]

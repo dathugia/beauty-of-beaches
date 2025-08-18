@@ -18,10 +18,12 @@ const Beaches = () => {
   const [editingBeach, setEditingBeach] = useState(null);
   const [editForm, setEditForm] = useState({
     name: '',
-    national: '',
     region_name: '',
+    city: '',
     description: '',
-    image_url: ''
+    image_url: '',
+    country: '',
+    rank: 0
   });
   const [message, setMessage] = useState('');
 
@@ -71,10 +73,12 @@ const Beaches = () => {
     setEditingBeach(beach);
     setEditForm({
       name: beach.name || '',
-      national: beach.national || '',
       region_name: beach.region_name || '',
+      city: beach.region_city || '',
       description: beach.description || '',
-      image_url: beach.image_url || ''
+      image_url: beach.image_url || '',
+      country: beach.country || '',
+      rank: beach.rank || 0
     });
     setShowEditModal(true);
   };
@@ -85,7 +89,7 @@ const Beaches = () => {
         const response = await fetch(`${API_BASE_URL}/admin_beach.php`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'delete', beach_id: beachId })
+          body: JSON.stringify({ action: 'delete', id: beachId })
         });
         
         const data = await response.json();
@@ -98,10 +102,11 @@ const Beaches = () => {
             setBeaches(json.data || []);
           }
         } else {
-          setMessage('Error deleting beach');
+          setMessage(data.message || 'Error deleting beach');
         }
       } catch (error) {
-        setMessage('Error deleting beach');
+        console.error('Delete error:', error);
+        setMessage('Error deleting beach: ' + error.message);
       }
     }
   };
@@ -113,7 +118,7 @@ const Beaches = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'update',
-          beach_id: editingBeach.id,
+          id: editingBeach.id,
           ...editForm
         })
       });
@@ -182,13 +187,27 @@ const Beaches = () => {
                     {beach.name}
                   </Card.Title>
                   
-                  {/* Thông tin quốc gia và vùng từ bảng regions */}
+                  {/* Thông tin quốc gia và vùng */}
                   <Card.Subtitle className="mb-3">
-                    {beach.national && beach.region_name && (
-                      <div className="location-info">
-                        {beach.national} - {beach.region_name}
-                      </div>
-                    )}
+                    <div className="location-info">
+                      {(() => {
+                        // Tạo chuỗi location từ dữ liệu có sẵn
+                        const country = beach.national || beach.country || '';
+                        
+                        // Sử dụng display_region từ API hoặc fallback
+                        let region = beach.display_region || beach.region_name || beach.city || '';
+                        
+                        if (country && region) {
+                          return `${country} - ${region}`;
+                        } else if (country) {
+                          return country;
+                        } else if (region) {
+                          return region;
+                        } else {
+                          return 'Location not specified';
+                        }
+                      })()}
+                    </div>
                   </Card.Subtitle>
                   
                   {/* Nút "View Details" */}
@@ -250,51 +269,77 @@ const Beaches = () => {
             <Row>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Beach Name</Form.Label>
+                  <Form.Label>Beach Name *</Form.Label>
                   <Form.Control
                     type="text"
                     value={editForm.name}
                     onChange={(e) => setEditForm({...editForm, name: e.target.value})}
                     placeholder="Enter beach name"
+                    required
                   />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>National</Form.Label>
-                  <Form.Control
-                    type="text"
-                    value={editForm.national}
-                    onChange={(e) => setEditForm({...editForm, national: e.target.value})}
-                    placeholder="Enter country"
-                  />
-                </Form.Group>
-              </Col>
-            </Row>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Region</Form.Label>
+                  <Form.Label>Region Name *</Form.Label>
                   <Form.Control
                     type="text"
                     value={editForm.region_name}
                     onChange={(e) => setEditForm({...editForm, region_name: e.target.value})}
-                    placeholder="Enter region"
+                    placeholder="Enter region name"
+                    required
+                  />
+                  <Form.Text className="text-muted mt-1">
+                    Enter city name below:
+                  </Form.Text>
+                  <Form.Control
+                    type="text"
+                    value={editForm.city}
+                    onChange={(e) => setEditForm({...editForm, city: e.target.value})}
+                    placeholder="Enter city name"
+                    className="mt-1"
+                    required
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Country *</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={editForm.country}
+                    onChange={(e) => setEditForm({...editForm, country: e.target.value})}
+                    placeholder="Enter country name"
+                    required
                   />
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
-                  <Form.Label>Image URL</Form.Label>
+                  <Form.Label>Rank</Form.Label>
                   <Form.Control
-                    type="url"
-                    value={editForm.image_url}
-                    onChange={(e) => setEditForm({...editForm, image_url: e.target.value})}
-                    placeholder="Enter image URL"
+                    type="number"
+                    value={editForm.rank}
+                    onChange={(e) => setEditForm({...editForm, rank: parseInt(e.target.value) || 0})}
+                    min="0"
                   />
                 </Form.Group>
               </Col>
             </Row>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Image URL</Form.Label>
+              <Form.Control
+                type="url"
+                value={editForm.image_url}
+                onChange={(e) => setEditForm({...editForm, image_url: e.target.value})}
+                placeholder="https://example.com/image.jpg"
+              />
+            </Form.Group>
+
             <Form.Group className="mb-3">
               <Form.Label>Description</Form.Label>
               <Form.Control
@@ -312,7 +357,7 @@ const Beaches = () => {
             Cancel
           </Button>
           <Button variant="primary" onClick={handleSaveEdit}>
-            Save Changes
+            Update Beach
           </Button>
         </Modal.Footer>
       </Modal>

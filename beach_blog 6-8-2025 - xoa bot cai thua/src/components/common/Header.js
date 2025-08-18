@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Navbar, Nav, Container, NavDropdown, Modal, Button, Form } from "react-bootstrap";
+import { Navbar, Nav, Container, NavDropdown, Modal, Button, Form, InputGroup } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import "./Header.css";
 
@@ -8,11 +8,12 @@ const Header = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [loginForm, setLoginForm] = useState({
-    username: "admin1",
+    username: "admin",
     password: "123456"
   });
   const [rememberPassword, setRememberPassword] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -51,24 +52,43 @@ const Header = () => {
       }
     };
 
-    // Kiểm tra trạng thái đăng nhập admin
+    // Kiểm tra trạng thái đăng nhập admin với cơ chế refresh token
     const checkAdminStatus = async () => {
       // Kiểm tra localStorage trước
       const storedAdminData = localStorage.getItem('adminData');
-      if (storedAdminData) {
+      const adminToken = localStorage.getItem('adminToken');
+      const refreshToken = localStorage.getItem('refreshToken');
+      
+      if (storedAdminData && adminToken) {
         try {
           const admin = JSON.parse(storedAdminData);
           if (admin) {
-            setIsLoggedIn(true);
-            return;
+            // Kiểm tra xem token có hết hạn chưa
+            const expiresAt = new Date(admin.expires_at);
+            const now = new Date();
+            
+            if (expiresAt > now) {
+              // Token còn hiệu lực
+              setIsLoggedIn(true);
+              return;
+            } else if (refreshToken) {
+              // Token hết hạn, thử refresh
+              const refreshResult = await refreshAdminToken(refreshToken);
+              if (refreshResult) {
+                setIsLoggedIn(true);
+                return;
+              }
+            }
           }
         } catch (err) {
+          console.error('Error parsing admin data:', err);
           localStorage.removeItem('adminData');
+          localStorage.removeItem('adminToken');
+          localStorage.removeItem('refreshToken');
         }
       }
       
-      // Nếu không có trong localStorage, kiểm tra session
-      const adminToken = localStorage.getItem('adminToken');
+      // Nếu không có trong localStorage hoặc token hết hạn, kiểm tra session
       if (adminToken) {
         try {
           const response = await fetch('http://localhost:8000/api/admin_auth.php', {
@@ -86,20 +106,62 @@ const Header = () => {
           const data = await response.json();
           if (data.success) {
             setIsLoggedIn(true);
-            // Save to localStorage for future checks
+            // Cập nhật localStorage với token mới
             localStorage.setItem('adminData', JSON.stringify(data.admin));
+            localStorage.setItem('adminToken', data.admin.session_token);
+            if (data.admin.refresh_token) {
+              localStorage.setItem('refreshToken', data.admin.refresh_token);
+            }
           } else {
-            // Session expired, clear tokens
+            // Session expired, thử refresh token
+            if (refreshToken) {
+              const refreshResult = await refreshAdminToken(refreshToken);
+              if (refreshResult) {
+                setIsLoggedIn(true);
+                return;
+              }
+            }
+            // Clear tokens nếu không refresh được
             localStorage.removeItem('adminData');
             localStorage.removeItem('adminToken');
+            localStorage.removeItem('refreshToken');
           }
         } catch (error) {
           console.error('Error checking admin status:', error);
           // Clear tokens on error
           localStorage.removeItem('adminData');
           localStorage.removeItem('adminToken');
+          localStorage.removeItem('refreshToken');
         }
       }
+    };
+
+    // Hàm refresh token
+    const refreshAdminToken = async (refreshToken) => {
+      try {
+        const response = await fetch('http://localhost:8000/api/admin_auth.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ 
+            action: 'refresh',
+            refresh_token: refreshToken
+          })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+          // Cập nhật localStorage với token mới
+          localStorage.setItem('adminData', JSON.stringify(data.admin));
+          localStorage.setItem('adminToken', data.admin.session_token);
+          return true;
+        }
+      } catch (error) {
+        console.error('Error refreshing token:', error);
+      }
+      return false;
     };
 
     checkAdminStatus();
@@ -115,7 +177,7 @@ const Header = () => {
   // Xử lý đăng nhập
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('Login attempt with:', loginForm);
+    // Attempt login
     
     try {
       const requestBody = {
@@ -123,7 +185,7 @@ const Header = () => {
         username: loginForm.username,
         password: loginForm.password
       };
-      console.log('Request body:', requestBody);
+      // Compose request body
       
       const response = await fetch('http://localhost:8000/api/admin_auth.php', {
         method: 'POST',
@@ -134,9 +196,7 @@ const Header = () => {
         body: JSON.stringify(requestBody)
       });
       
-      console.log('Response status:', response.status);
       const data = await response.json();
-      console.log('Response data:', data);
       
       if (data.success) {
         setIsLoggedIn(true);
@@ -152,9 +212,12 @@ const Header = () => {
           localStorage.removeItem('adminCredentials');
         }
         
-        // Save admin data to localStorage
+        // Save admin data to localStorage với refresh token
         localStorage.setItem('adminData', JSON.stringify(data.admin));
         localStorage.setItem('adminToken', data.admin.session_token);
+        if (data.admin.refresh_token) {
+          localStorage.setItem('refreshToken', data.admin.refresh_token);
+        }
         
         // Redirect to admin dashboard
         window.location.href = '/admin/dashboard';
@@ -189,6 +252,8 @@ const Header = () => {
         // Clear all stored session data
         localStorage.removeItem('adminData');
         localStorage.removeItem('adminToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('adminCredentials');
         // Redirect to home page
         window.location.href = '/';
       }
@@ -198,6 +263,8 @@ const Header = () => {
       setIsLoggedIn(false);
       localStorage.removeItem('adminData');
       localStorage.removeItem('adminToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('adminCredentials');
       window.location.href = '/';
     }
   };
@@ -313,13 +380,23 @@ const Header = () => {
             
             <Form.Group className="mb-3">
               <Form.Label>Password *</Form.Label>
-              <Form.Control
-                type="password"
-                value={loginForm.password}
-                onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
-                required
-                placeholder="Enter password"
-              />
+              <InputGroup>
+                <Form.Control
+                  type={showPassword ? "text" : "password"}
+                  value={loginForm.password}
+                  onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
+                  required
+                  placeholder="Enter password"
+                />
+                <Button
+                  variant="outline-secondary"
+                  onClick={() => setShowPassword((v) => !v)}
+                  tabIndex={-1}
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  <i className={showPassword ? "fas fa-eye-slash" : "fas fa-eye"}></i>
+                </Button>
+              </InputGroup>
             </Form.Group>
             
             <Form.Group className="mb-3">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Card, Form, Button, Alert } from 'react-bootstrap';
+import { Container, Row, Col, Card, Form, Button, Alert, InputGroup } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import './AdminLogin.css';
 
@@ -10,6 +10,7 @@ const AdminLogin = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -96,14 +97,24 @@ const AdminLogin = () => {
 
                   <Form.Group className="mb-4">
                     <Form.Label>Password</Form.Label>
-                    <Form.Control
-                      type="password"
-                      name="password"
-                      value={loginForm.password}
-                      onChange={handleInputChange}
-                      required
-                      placeholder="Enter password"
-                    />
+                    <InputGroup>
+                      <Form.Control
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
+                        value={loginForm.password}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Enter password"
+                      />
+                      <Button
+                        variant="outline-secondary"
+                        onClick={() => setShowPassword(v => !v)}
+                        tabIndex={-1}
+                        title={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        <i className={showPassword ? 'fas fa-eye-slash' : 'fas fa-eye'}></i>
+                      </Button>
+                    </InputGroup>
                   </Form.Group>
 
                   <Button

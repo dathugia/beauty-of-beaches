@@ -15,6 +15,7 @@
   padding: 15px 0;
 }
 
+
 .navbar.scrolled {
   background: #00000080;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
@@ -103,7 +104,7 @@
 .dropdown-other .dropdown-item:hover {
   background: rgba(255, 107, 107, 0.2) !important;
   color: #ff6b6b !important;
-  transform: translateX(5px);
+  /* transform: translateX(5px); */
 }
 
 /* Fade in/out effect for nav items */
@@ -403,6 +404,8 @@
 }
 
 /* Responsive adjustments */
+/* (reverted compact wrap rules) */
+
 @media (max-width: 991.98px) {
   .navbar-collapse {
     background: rgba(30, 60, 114, 0.95);

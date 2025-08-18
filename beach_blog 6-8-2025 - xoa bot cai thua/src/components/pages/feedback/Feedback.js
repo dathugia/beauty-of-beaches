@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import './Feedback.css';
 import { API_BASE_URL } from '../../../util/url';
 
 const Feedback = () => {
+  const [searchParams] = useSearchParams();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,6 +37,14 @@ const Feedback = () => {
     };
     loadBeaches();
   }, []);
+
+  // Prefill beach from URL (?beachId= or ?beach_id=)
+  useEffect(() => {
+    const paramId = searchParams.get('beachId') || searchParams.get('beach_id');
+    if (paramId) {
+      setFormData(prev => ({ ...prev, beachId: String(paramId) }));
+    }
+  }, [searchParams]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -89,22 +99,47 @@ const Feedback = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (validateForm()) {
-      // Simulate API call
-      setTimeout(() => {
-        setIsSubmitted(true);
-        setFormData({
-          name: '',
-          email: '',
-          beachId: '',
-          message: '',
-          rating: 5,
-          attachment: null
+      try {
+        // Tạo FormData để hỗ trợ upload file
+        const formDataToSend = new FormData();
+        formDataToSend.append('beach_id', parseInt(formData.beachId));
+        formDataToSend.append('visitor_name', formData.name);
+        formDataToSend.append('email', formData.email);
+        formDataToSend.append('rating', formData.rating);
+        formDataToSend.append('feedback_comment', formData.message);
+        
+        // Thêm file nếu có
+        if (formData.attachment) {
+          formDataToSend.append('attachment', formData.attachment);
+        }
+        
+        const response = await fetch(`${API_BASE_URL}/submit_feedback.php`, {
+          method: 'POST',
+          body: formDataToSend, // Không cần Content-Type header khi dùng FormData
         });
-      }, 1000);
+        
+        const data = await response.json();
+        
+        if (data.status) {
+          setIsSubmitted(true);
+          setFormData({
+            name: '',
+            email: '',
+            beachId: '',
+            message: '',
+            rating: 5,
+            attachment: null
+          });
+        } else {
+          alert('Error: ' + data.message);
+        }
+      } catch (error) {
+        alert('Error submitting feedback: ' + error.message);
+      }
     }
   };
 
@@ -114,7 +149,7 @@ const Feedback = () => {
         <div className="feedback-success">
           <div className="success-icon">✅</div>
           <h2>Thank you!</h2>
-          <p>Your feedback has been sent successfully. We will get back to you as soon as possible.</p>
+          <p>Your feedback has been submitted successfully! It will be reviewed by admin before being displayed.</p>
           <button 
             className="btn btn-primary"
             onClick={() => setIsSubmitted(false)}

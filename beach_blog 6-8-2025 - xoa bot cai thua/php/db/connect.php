@@ -1,7 +1,7 @@
 <?php
 function connect() {
     $host = 'localhost';
-    $dbname = 'bob'; // Tên database của bạn
+    $dbname = 'bb'; // Tên database của bạn
     $username = 'root';
     $password = 'root'; // Password MAMP thường là 'root'
     

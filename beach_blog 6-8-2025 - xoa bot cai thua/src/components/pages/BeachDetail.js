@@ -10,10 +10,15 @@ const BeachDetail = () => {
     const { id } = useParams();
     // State để lưu thông tin bãi biển
     const [beach, setBeach] = useState({});
+    // State để lưu galleries của beach
+    const [galleries, setGalleries] = useState([]);
     // State để hiển thị loading
     const [loading, setLoading] = useState(true);
     // State để lưu lỗi
     const [error, setError] = useState('');
+    // State để quản lý lightbox gallery
+    const [selectedImage, setSelectedImage] = useState(null);
+    const [lightboxIndex, setLightboxIndex] = useState(0);
     // State để quản lý form feedback
     const [showFeedbackForm, setShowFeedbackForm] = useState(false);
     const [feedbackData, setFeedbackData] = useState({
@@ -25,6 +30,99 @@ const BeachDetail = () => {
     });
     const [feedbackErrors, setFeedbackErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Feedback list for this beach (approved only, max 3 from API)
+    const [feedbacks, setFeedbacks] = useState([]);
+    const [loadingFeedback, setLoadingFeedback] = useState(true);
+    const [feedbackLoadError, setFeedbackLoadError] = useState('');
+
+    // Hàm mở lightbox
+    const openLightbox = (imageUrl, index) => {
+        setSelectedImage(imageUrl);
+        setLightboxIndex(index);
+    };
+
+    // Hàm đóng lightbox
+    const closeLightbox = () => {
+        setSelectedImage(null);
+        setLightboxIndex(0);
+    };
+
+    // Hàm chuyển ảnh trong gallery (3 ảnh mỗi lần)
+    const showPrevGallery = () => {
+        if (galleries.length > 0) {
+            const newIndex = Math.max(0, lightboxIndex - 3);
+            setLightboxIndex(newIndex);
+        }
+    };
+
+    const showNextGallery = () => {
+        if (galleries.length > 0) {
+            const newIndex = Math.min(galleries.length - 3, lightboxIndex + 3);
+            setLightboxIndex(newIndex);
+        }
+    };
+
+    // Hàm chuyển ảnh trong lightbox (1 ảnh mỗi lần)
+    const showPrevImage = () => {
+        if (galleries.length > 0) {
+            const newIndex = (lightboxIndex - 1 + galleries.length) % galleries.length;
+            setLightboxIndex(newIndex);
+            setSelectedImage(galleries[newIndex].image_url);
+        }
+    };
+
+    const showNextImage = () => {
+        if (galleries.length > 0) {
+            const newIndex = (lightboxIndex + 1) % galleries.length;
+            setLightboxIndex(newIndex);
+            setSelectedImage(galleries[newIndex].image_url);
+        }
+    };
+
+    // Hàm xử lý phím tắt cho lightbox
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (selectedImage) {
+                if (e.key === 'Escape') {
+                    closeLightbox();
+                } else if (e.key === 'ArrowLeft') {
+                    showPrevImage();
+                } else if (e.key === 'ArrowRight') {
+                    showNextImage();
+                }
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [selectedImage, lightboxIndex, galleries]);
+
+    // Load approved feedbacks (latest 3) for this beach
+    useEffect(() => {
+        const loadFeedbacks = async () => {
+            try {
+                setLoadingFeedback(true);
+                const res = await fetch(`${API_BASE_URL}/beach_feedback.php?beach_id=${id}`);
+                const json = await res.json();
+                if (json.status) {
+                    setFeedbacks(json.data || []);
+                } else {
+                    setFeedbackLoadError(json.message || 'Không tải được đánh giá');
+                }
+            } catch (e) {
+                setFeedbackLoadError(e.message);
+            } finally {
+                setLoadingFeedback(false);
+            }
+        };
+        loadFeedbacks();
+    }, [id]);
+
+    const renderStaticStars = (rating) => {
+        const safe = Math.max(0, Math.min(5, parseInt(rating || 0)));
+        return '⭐'.repeat(safe) + '☆'.repeat(5 - safe);
+    };
 
     // Hàm render stars cho rating
     const renderStars = (rating) => {
@@ -79,42 +177,16 @@ const BeachDetail = () => {
         return Object.keys(newErrors).length === 0;
     };
 
-    // Hàm download thông tin bãi biển
+    // Hàm download thông tin bãi biển (server-generated, từ DB)
     const downloadBeachInfo = () => {
         try {
-            // Tạo nội dung file từ thông tin bãi biển hiện tại
-            const content = `
-BEACH INFORMATION
-=================
-
-Name: ${beach.name || 'Not available'}
-Location: ${beach.national || ''} - ${beach.region_name || ''}
-
-DESCRIPTION:
-${beach.description ? beach.description.replace(/<[^>]*>/g, '') : 'No description available'}
-
-TRAVEL TIPS:
-${beach.tips ? beach.tips.replace(/<[^>]*>/g, '') : 'No tips available'}
-
-ADDITIONAL INFORMATION:
-- Image URL: ${beach.image_url || 'Not available'}
-- Region: ${beach.region_name || 'Not available'}
-- Country: ${beach.national || 'Not available'}
-
-Generated on: ${new Date().toLocaleDateString()}
-Source: Beauty of Beaches
-            `.trim();
-
-            // Tạo blob và download
-            const blob = new Blob([content], { type: 'text/plain' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${beach.name ? beach.name.replace(/[^a-zA-Z0-9]/g, '_') : 'beach'}_info.txt`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
+            const url = `${API_BASE_URL}/download_beach.php?id=${id}`;
+            const anchor = document.createElement('a');
+            anchor.href = url;
+            anchor.target = '_blank';
+            document.body.appendChild(anchor);
+            anchor.click();
+            document.body.removeChild(anchor);
         } catch (error) {
             console.error('Error downloading beach info:', error);
             alert('Error downloading beach information');
@@ -163,6 +235,18 @@ Source: Beauty of Beaches
             } else {
                 setError(json.message || 'Không tìm thấy bãi biển'); // Lưu lỗi
             }
+
+            // Gọi API để lấy galleries của beach này
+            const galleriesResponse = await fetch(`${API_BASE_URL}/galleries.php`);
+            const galleriesJson = await galleriesResponse.json();
+            
+            if (galleriesJson.status) {
+                // Lọc galleries chỉ cho beach hiện tại
+                const beachGalleries = galleriesJson.data.filter(gallery => 
+                    gallery.beach_id == id
+                );
+                setGalleries(beachGalleries);
+            }
         } catch (e) {
             setError('Lỗi kết nối: ' + e.message); // Lưu lỗi network
         } finally {
@@ -197,6 +281,34 @@ Source: Beauty of Beaches
 
     return (
         <>
+            {/* CSS để đảm bảo ảnh gallery có cùng kích thước */}
+            <style>
+                {`
+                    .gallery-image {
+                        width: 100% !important;
+                        height: 100% !important;
+                        object-fit: cover !important;
+                        object-position: center !important;
+                        min-width: 100% !important;
+                        min-height: 100% !important;
+                        max-width: 100% !important;
+                        max-height: 100% !important;
+                        display: block !important;
+                    }
+                    .gallery-item {
+                        flex: 1 !important;
+                        height: 600px !important;
+                        width: calc(33.333% - 7px) !important;
+                        position: relative !important;
+                        border-radius: 8px !important;
+                        overflow: hidden !important;
+                        cursor: pointer !important;
+                        min-width: 0 !important;
+                        flex-shrink: 0 !important;
+                    }
+                `}
+            </style>
+            
             {/* BeachHeader component với thông tin bãi biển */}
             <BeachHeader currentBeachId={id} beachData={beach} />
             
@@ -218,6 +330,79 @@ Source: Beauty of Beaches
                     }}
                 />
             </div>
+
+            {/* Phần Gallery - Hiển thị 3 ảnh cố định */}
+            {galleries.length > 0 && (
+                <div className="mb-4">
+                    {/* <h4 className="mb-4">
+                        <i className="fas fa-images me-2 text-primary"></i>
+                        Photo Gallery
+                    </h4> */}
+                    <div className="gallery-container" style={{
+                        position: 'relative',
+                        width: '100%',
+                        height: '600px',
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                        display: 'flex',
+                        gap: '10px',
+                        alignItems: 'stretch',
+                        justifyContent: 'space-between'
+                    }}>
+                        {/* Hiển thị 3 ảnh đầu tiên cố định */}
+                        {galleries.slice(0, 3).map((gallery, index) => (
+                            <div 
+                                key={gallery.id}
+                                className="gallery-item"
+                                style={{ position: 'relative' }}
+                            >
+                                <img 
+                                    src={gallery.image_url} 
+                                    alt={`${beach.name} - Image ${index + 1}`}
+                                    className="gallery-image"
+                                />
+                                
+                                {/* Overlay "Xem nhiều ảnh hơn" trên ảnh thứ 3 */}
+                                {index === 2 && galleries.length > 3 && (
+                                    <div 
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            right: 0,
+                                            bottom: 0,
+                                            background: 'rgba(0,0,0,0.6)',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            cursor: 'pointer',
+                                            transition: 'background 0.3s ease'
+                                        }}
+                                        onMouseEnter={(e) => e.target.style.background = 'rgba(0,0,0,0.8)'}
+                                        onMouseLeave={(e) => e.target.style.background = 'rgba(0,0,0,0.6)'}
+                                        onClick={() => window.location.href = `/gallery?beach_id=${id}`}
+                                    >
+                                        <div style={{
+                                            textAlign: 'center',
+                                            color: 'white',
+                                            fontWeight: 'bold',
+                                            fontSize: '16px'
+                                        }}>
+                                            <i className="fas fa-images mb-2" style={{ fontSize: '24px', display: 'block' }}></i>
+                                            Xem nhiều ảnh hơn
+                                            <br />
+                                            <small style={{ fontSize: '12px', opacity: 0.8 }}>
+                                                +{galleries.length - 3} ảnh khác
+                                            </small>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {/* Phần Tips */}
             {beach.tips && (
@@ -241,154 +426,239 @@ Source: Beauty of Beaches
                     />
                 </div>
             )}
+            
 
-            {/* Phần Download và Feedback */}
+            {/* Visitor Reviews (Approved, latest 3) */}
             <div className="mb-4">
-                <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h4 className="mb-0">
-                        <i className="fas fa-comments me-2 text-primary"></i>
-                        Share Your Experience
-                    </h4>
+                {/* <h4 className="mb-3">
+                    <i className="fas fa-comments me-2 text-primary"></i>
+                    Visitor Reviews
+                </h4> */}
+                {loadingFeedback ? (
+                    <div className="text-muted">Loading reviews...</div>
+                ) : feedbackLoadError ? (
+                    <div className="text-danger">{feedbackLoadError}</div>
+                ) : feedbacks.length === 0 ? (
+                    <div className="text-muted">No reviews yet.</div>
+                ) : (
+                    <div className="list-group">
+                        {feedbacks.slice(0, 3).map((fb, idx) => (
+                            <div key={idx} className="list-group-item">
+                                <div className="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>{fb.visitor_name}</strong>
+                                        <div className="small text-muted">{renderStaticStars(fb.rating)} ({fb.rating}/5)</div>
+                                    </div>
+                                    <small className="text-muted">{new Date(fb.created_at).toLocaleDateString('vi-VN')}</small>
+                                </div>
+                                <div className="mt-2">{fb.feedback_comment}</div>
+                                {fb.attachment_path && (
+                                    <div className="mt-2">
+                                        <a 
+                                            href={`${API_BASE_URL}/${fb.attachment_path}`} 
+                                            target="_blank" 
+                                            rel="noopener noreferrer"
+                                            className="btn btn-sm btn-outline-primary"
+                                        >
+                                            <i className="fas fa-paperclip me-1"></i>
+                                            View attachment
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+                <div className="mt-3 d-flex gap-2">
+                    <a className="btn btn-outline-primary btn-sm" href={`/feedback?beachId=${id}`}>
+                        <i className="fas fa-pen me-2"></i>
+                        Write a review
+                    </a>
                     <button 
-                        className="btn btn-outline-success"
-                        onClick={() => downloadBeachInfo()}
-                        title="Download beach information"
+                        type="button"
+                        className="btn btn-outline-secondary btn-sm"
+                        onClick={downloadBeachInfo}
                     >
                         <i className="fas fa-download me-2"></i>
-                        Download Info
+                        Download info
                     </button>
                 </div>
-                
-                {!showFeedbackForm ? (
-                    <div className="text-center py-4">
-                        <i className="fas fa-comment-plus text-muted mb-3" style={{fontSize: '2rem'}}></i>
-                        <p className="text-muted mb-3">Share your experience at this beautiful beach!</p>
-                        <button 
-                            className="btn btn-primary"
-                            onClick={() => setShowFeedbackForm(true)}
-                        >
-                            <i className="fas fa-plus me-2"></i>
-                            Write a Review
-                        </button>
-                    </div>
-                ) : (
-                    <Card className="feedback-form-card">
-                        <Card.Body>
-                            <form onSubmit={handleFeedbackSubmit}>
-                                <div className="row">
-                                    <div className="col-md-6 mb-3">
-                                        <label htmlFor="name" className="form-label">Full Name *</label>
-                                        <input
-                                            type="text"
-                                            className={`form-control ${feedbackErrors.name ? 'is-invalid' : ''}`}
-                                            id="name"
-                                            name="name"
-                                            value={feedbackData.name}
-                                            onChange={handleFeedbackChange}
-                                            placeholder="Enter your full name"
-                                        />
-                                        {feedbackErrors.name && (
-                                            <div className="invalid-feedback">{feedbackErrors.name}</div>
-                                        )}
-                                    </div>
-                                    
-                                    <div className="col-md-6 mb-3">
-                                        <label htmlFor="email" className="form-label">Email *</label>
-                                        <input
-                                            type="email"
-                                            className={`form-control ${feedbackErrors.email ? 'is-invalid' : ''}`}
-                                            id="email"
-                                            name="email"
-                                            value={feedbackData.email}
-                                            onChange={handleFeedbackChange}
-                                            placeholder="Enter your email"
-                                        />
-                                        {feedbackErrors.email && (
-                                            <div className="invalid-feedback">{feedbackErrors.email}</div>
-                                        )}
-                                    </div>
-                                </div>
-                                
-                                <div className="mb-3">
-                                    <label className="form-label">Rating</label>
-                                    <div className="rating-container">
-                                        {renderStars(feedbackData.rating)}
-                                        <span className="rating-text ms-2">{feedbackData.rating}/5 stars</span>
-                                    </div>
-                                </div>
-                                
-                                <div className="mb-3">
-                                    <label htmlFor="message" className="form-label">Message *</label>
-                                    <textarea
-                                        className={`form-control ${feedbackErrors.message ? 'is-invalid' : ''}`}
-                                        id="message"
-                                        name="message"
-                                        rows="4"
-                                        value={feedbackData.message}
-                                        onChange={handleFeedbackChange}
-                                        placeholder="Share your experience at this beach..."
-                                    />
-                                    {feedbackErrors.message && (
-                                        <div className="invalid-feedback">{feedbackErrors.message}</div>
-                                    )}
-                                </div>
-                                
-                                <div className="mb-3">
-                                    <label htmlFor="attachment" className="form-label">Attachment (optional)</label>
-                                    <input
-                                        type="file"
-                                        className={`form-control ${feedbackErrors.attachment ? 'is-invalid' : ''}`}
-                                        id="attachment"
-                                        name="attachment"
-                                        onChange={handleFeedbackChange}
-                                        accept="image/*,application/pdf"
-                                    />
-                                    {feedbackData.attachment && (
-                                        <small className="text-muted d-block mt-1">
-                                            <i className="fas fa-file me-1"></i>
-                                            Selected file: {feedbackData.attachment.name}
-                                        </small>
-                                    )}
-                                    {feedbackErrors.attachment && (
-                                        <div className="invalid-feedback">{feedbackErrors.attachment}</div>
-                                    )}
-                                </div>
-                                
-                                <div className="d-flex gap-2">
-                                    <button 
-                                        type="submit" 
-                                        className="btn btn-primary"
-                                        disabled={isSubmitting}
-                                    >
-                                        {isSubmitting ? (
-                                            <>
-                                                <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                                                Submitting...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <i className="fas fa-paper-plane me-2"></i>
-                                                Submit Feedback
-                                            </>
-                                        )}
-                                    </button>
-                                    <button 
-                                        type="button" 
-                                        className="btn btn-outline-secondary"
-                                        onClick={() => setShowFeedbackForm(false)}
-                                        disabled={isSubmitting}
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            </form>
-                        </Card.Body>
-                    </Card>
-                )}
             </div>
             </Container>
+
+            {/* Lightbox Gallery */}
+            {selectedImage && (
+                <div 
+                    className="lightbox-overlay"
+                    onClick={closeLightbox}
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'rgba(0,0,0,0.9)',
+                        zIndex: 9999,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <div 
+                        className="lightbox-content"
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                            position: 'relative',
+                            maxWidth: '90vw',
+                            maxHeight: '90vh'
+                        }}
+                    >
+                        <img 
+                            src={selectedImage} 
+                            alt={`${beach.name} - Gallery Image`}
+                            style={{
+                                maxWidth: '100%',
+                                maxHeight: '100%',
+                                objectFit: 'contain'
+                            }}
+                        />
+                        
+                        {/* Close button */}
+                        <button 
+                            onClick={closeLightbox}
+                            style={{
+                                position: 'absolute',
+                                top: '20px',
+                                right: '20px',
+                                background: 'rgba(0,0,0,0.7)',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '50%',
+                                width: '50px',
+                                height: '50px',
+                                fontSize: '24px',
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                transition: 'background 0.3s ease'
+                            }}
+                            onMouseEnter={(e) => e.target.style.background = 'rgba(0,0,0,0.9)'}
+                            onMouseLeave={(e) => e.target.style.background = 'rgba(0,0,0,0.7)'}
+                        >
+                            ×
+                        </button>
+                        
+                        {/* Navigation arrows - Previous */}
+                        {galleries.length > 1 && (
+                            <button 
+                                onClick={showPrevImage}
+                                style={{
+                                    position: 'absolute',
+                                    left: '20px',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: 'rgba(0,0,0,0.7)',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '50%',
+                                    width: '60px',
+                                    height: '60px',
+                                    fontSize: '28px',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.3s ease'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.background = 'rgba(0,0,0,0.9)';
+                                    e.target.style.transform = 'translateY(-50%) scale(1.1)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.background = 'rgba(0,0,0,0.7)';
+                                    e.target.style.transform = 'translateY(-50%) scale(1)';
+                                }}
+                            >
+                                ‹
+                            </button>
+                        )}
+                        
+                        {/* Navigation arrows - Next */}
+                        {galleries.length > 1 && (
+                            <button 
+                                onClick={showNextImage}
+                                style={{
+                                    position: 'absolute',
+                                    right: '20px',
+                                    top: '50%',
+                                    transform: 'translateY(-50%)',
+                                    background: 'rgba(0,0,0,0.7)',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '50%',
+                                    width: '60px',
+                                    height: '60px',
+                                    fontSize: '28px',
+                                    cursor: 'pointer',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    transition: 'all 0.3s ease'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.background = 'rgba(0,0,0,0.9)';
+                                    e.target.style.transform = 'translateY(-50%) scale(1.1)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.background = 'rgba(0,0,0,0.7)';
+                                    e.target.style.transform = 'translateY(-50%) scale(1)';
+                                }}
+                            >
+                                ›
+                            </button>
+                        )}
+                        
+                        {/* Image counter */}
+                        <div style={{
+                            position: 'absolute',
+                            bottom: '20px',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            background: 'rgba(0,0,0,0.7)',
+                            color: 'white',
+                            padding: '10px 20px',
+                            borderRadius: '25px',
+                            fontSize: '16px',
+                            fontWeight: 'bold'
+                        }}>
+                            {lightboxIndex + 1} / {galleries.length}
+                        </div>
+                        
+                        {/* Caption - Bỏ qua HTML tags */}
+                        {galleries[lightboxIndex]?.caption && (
+                            <div style={{
+                                position: 'absolute',
+                                bottom: '80px',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                background: 'rgba(0,0,0,0.7)',
+                                color: 'white',
+                                padding: '15px 25px',
+                                borderRadius: '10px',
+                                fontSize: '16px',
+                                maxWidth: '80%',
+                                textAlign: 'center'
+                            }}>
+                                {galleries[lightboxIndex].caption.replace(/<[^>]*>/g, '')}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
         </>
     );
 };
 
 export default BeachDetail;
+

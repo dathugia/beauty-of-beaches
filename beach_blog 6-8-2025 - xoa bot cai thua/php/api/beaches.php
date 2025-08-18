@@ -10,11 +10,19 @@ require_once("./../db/connect.php");
 try {
     $conn = connect();
     
-    // Sửa đổi SQL query để JOIN với bảng regions và lấy thông tin city, national, và name
-    $sql = "SELECT b.*, r.name as region_name, r.city, r.national 
+    // Cập nhật SQL query để xử lý logic region/city tốt hơn
+    $sql = "SELECT b.*, 
+            r.name as region_name, 
+            r.city, 
+            r.national,
+            CASE 
+                WHEN r.name IS NOT NULL AND r.name != '' THEN r.name
+                WHEN r.city IS NOT NULL AND r.city != '' THEN r.city
+                ELSE NULL
+            END as display_region
             FROM beaches b 
             LEFT JOIN regions r ON b.region_id = r.id 
-            ORDER BY b.rank ASC, b.id ASC";
+            ORDER BY b.id ASC";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $list = $stmt->fetchAll(PDO::FETCH_ASSOC);

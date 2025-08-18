@@ -21,10 +21,10 @@ try {
         exit;
     }
 
-    // Lấy feedback theo beach_id, giới hạn 3 feedback mới nhất
-    $sql = "SELECT name, rating, message, created_at 
-            FROM feedback 
-            WHERE beach_id = ? 
+    // Lấy feedback theo beach_id, chỉ hiển thị feedback đã được approve, giới hạn 3 feedback mới nhất
+    $sql = "SELECT visitor_name, rating, feedback_comment, created_at, attachment_path 
+            FROM beach_feedback 
+            WHERE beach_id = ? AND is_approved = 1
             ORDER BY created_at DESC 
             LIMIT 3";
     $stmt = $conn->prepare($sql);

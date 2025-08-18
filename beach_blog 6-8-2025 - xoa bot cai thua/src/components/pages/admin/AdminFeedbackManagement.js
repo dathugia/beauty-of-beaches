@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Table, Modal, Form, Alert, Badge } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { API_BASE_URL } from '../../../util/url';
 import './AdminFeedbackManagement.css';
 
 const AdminFeedbackManagement = () => {
@@ -18,7 +19,7 @@ const AdminFeedbackManagement = () => {
 
   const fetchFeedbacks = async () => {
     try {
-      const response = await fetch('http://localhost:8000/api/admin_feedback.php?action=get_all');
+      const response = await fetch(`${API_BASE_URL}/admin_feedback.php`);
       const data = await response.json();
       if (data.success) {
         setFeedbacks(data.feedbacks);
@@ -36,11 +37,10 @@ const AdminFeedbackManagement = () => {
 
   const handleApprove = async (feedbackId) => {
     try {
-      const response = await fetch('http://localhost:8000/api/admin_feedback.php', {
+      const response = await fetch(`${API_BASE_URL}/admin_feedback.php`, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'credentials': 'include'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ action: 'approve', feedback_id: feedbackId })
       });
@@ -61,11 +61,10 @@ const AdminFeedbackManagement = () => {
 
   const handleReject = async (feedbackId) => {
     try {
-      const response = await fetch('http://localhost:8000/api/admin_feedback.php', {
+      const response = await fetch(`${API_BASE_URL}/admin_feedback.php`, {
         method: 'POST',
         headers: { 
-          'Content-Type': 'application/json',
-          'credentials': 'include'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ action: 'reject', feedback_id: feedbackId })
       });
@@ -87,11 +86,10 @@ const AdminFeedbackManagement = () => {
   const handleDelete = async (feedbackId) => {
     if (window.confirm('Are you sure you want to delete this feedback?')) {
       try {
-        const response = await fetch('http://localhost:8000/api/admin_feedback.php', {
+        const response = await fetch(`${API_BASE_URL}/admin_feedback.php`, {
           method: 'POST',
           headers: { 
-            'Content-Type': 'application/json',
-            'credentials': 'include'
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({ action: 'delete', feedback_id: feedbackId })
         });
@@ -232,6 +230,7 @@ const AdminFeedbackManagement = () => {
                       <th>Beach</th>
                       <th>Visitor</th>
                       <th>Rating</th>
+                      <th>Attachment</th>
                       <th>Status</th>
                       <th>Date</th>
                       <th>Actions</th>
@@ -261,6 +260,21 @@ const AdminFeedbackManagement = () => {
                               ))}
                             </div>
                           </div>
+                        </td>
+                        <td>
+                          {feedback.attachment_path ? (
+                            <a 
+                              href={`${API_BASE_URL}/${feedback.attachment_path}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="btn btn-sm btn-outline-primary"
+                            >
+                              <i className="fas fa-paperclip me-1"></i>
+                              View
+                            </a>
+                          ) : (
+                            <span className="text-muted">No attachment</span>
+                          )}
                         </td>
                         <td>{getStatusBadge(feedback.is_approved)}</td>
                         <td>{new Date(feedback.created_at).toLocaleDateString()}</td>

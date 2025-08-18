@@ -16,18 +16,127 @@ const AdminDashboard = () => {
   });
 
   useEffect(() => {
-    // Kiểm tra admin đã đăng nhập chưa
-    const storedAdminData = localStorage.getItem('adminData');
-    if (storedAdminData) {
-      setAdminData(JSON.parse(storedAdminData));
-      // Lấy thống kê từ API
-      fetchStats();
-    } else {
-      // Redirect về login nếu chưa đăng nhập
-      window.location.href = '/';
-    }
-    setLoading(false);
+    // Kiểm tra admin đã đăng nhập chưa với cơ chế refresh token
+    checkAdminAuth();
   }, []);
+
+  // Hàm kiểm tra authentication với refresh token
+  const checkAdminAuth = async () => {
+    const storedAdminData = localStorage.getItem('adminData');
+    const adminToken = localStorage.getItem('adminToken');
+    const refreshToken = localStorage.getItem('refreshToken');
+    
+    if (storedAdminData && adminToken) {
+      try {
+        const admin = JSON.parse(storedAdminData);
+        if (admin) {
+          // Kiểm tra xem token có hết hạn chưa
+          const expiresAt = new Date(admin.expires_at);
+          const now = new Date();
+          
+          if (expiresAt > now) {
+            // Token còn hiệu lực
+            setAdminData(admin);
+            fetchStats();
+            setLoading(false);
+            return;
+          } else if (refreshToken) {
+            // Token hết hạn, thử refresh
+            const refreshResult = await refreshAdminToken(refreshToken);
+            if (refreshResult) {
+              setAdminData(refreshResult);
+              fetchStats();
+              setLoading(false);
+              return;
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error parsing admin data:', err);
+        localStorage.removeItem('adminData');
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('refreshToken');
+      }
+    }
+    
+    // Nếu không có trong localStorage hoặc token hết hạn, kiểm tra session
+    if (adminToken) {
+      try {
+        const response = await fetch('http://localhost:8000/api/admin_auth.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify({ 
+            action: 'verify',
+            session_token: adminToken
+          })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+          setAdminData(data.admin);
+          // Cập nhật localStorage với token mới
+          localStorage.setItem('adminData', JSON.stringify(data.admin));
+          localStorage.setItem('adminToken', data.admin.session_token);
+          if (data.admin.refresh_token) {
+            localStorage.setItem('refreshToken', data.admin.refresh_token);
+          }
+          fetchStats();
+          setLoading(false);
+          return;
+        } else {
+          // Session expired, thử refresh token
+          if (refreshToken) {
+            const refreshResult = await refreshAdminToken(refreshToken);
+            if (refreshResult) {
+              setAdminData(refreshResult);
+              fetchStats();
+              setLoading(false);
+              return;
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+      }
+    }
+    
+    // Nếu không thể xác thực, redirect về login
+    localStorage.removeItem('adminData');
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('refreshToken');
+    window.location.href = '/';
+  };
+
+  // Hàm refresh token
+  const refreshAdminToken = async (refreshToken) => {
+    try {
+      const response = await fetch('http://localhost:8000/api/admin_auth.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ 
+          action: 'refresh',
+          refresh_token: refreshToken
+        })
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        // Cập nhật localStorage với token mới
+        localStorage.setItem('adminData', JSON.stringify(data.admin));
+        localStorage.setItem('adminToken', data.admin.session_token);
+        return data.admin;
+      }
+    } catch (error) {
+      console.error('Error refreshing token:', error);
+    }
+    return null;
+  };
 
   // Hàm lấy thống kê từ API
   const fetchStats = async () => {
@@ -43,8 +152,28 @@ const AdminDashboard = () => {
   };
 
   const handleLogout = () => {
+    const adminToken = localStorage.getItem('adminToken');
+    
+    // Gọi API logout
+    fetch('http://localhost:8000/api/admin_auth.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ 
+        action: 'logout',
+        session_token: adminToken
+      })
+    }).catch(error => {
+      console.error('Logout error:', error);
+    });
+    
+    // Clear all stored data
     localStorage.removeItem('adminData');
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('adminCredentials');
     window.location.href = '/';
   };
 
@@ -80,6 +209,12 @@ const AdminDashboard = () => {
            <Col>
              <h1>Admin Dashboard</h1>
              <p>Welcome back, {adminData.username}!</p>
+           </Col>
+           <Col xs="auto">
+             <Button variant="outline-danger" onClick={handleLogout}>
+               <i className="fas fa-sign-out-alt me-2"></i>
+               Logout
+             </Button>
            </Col>
          </Row>
 

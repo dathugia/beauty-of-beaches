@@ -1,60 +1,77 @@
-import React from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import TransportationSection from "../common/TransportationSection";
+import { API_BASE_URL } from "../../util/url";
 import "./Regions.css";
 
 const Regions = () => {
   const { direction } = useParams();
 
-  // Sample beach data for each direction
-  const beachData = {
-    east: {
-      title: "East Region Beaches",
-      beaches: [
-        { name: "Bali Beach", country: "Indonesia", description: "Famous for its white sand and crystal clear water" },
-        { name: "Phuket Beach", country: "Thailand", description: "Beautiful tropical paradise with stunning views" },
-        { name: "Maldives Beaches", country: "Maldives", description: "Overwater bungalows and pristine beaches" }
-      ]
-    },
-    north: {
-      title: "North Region Beaches",
-      beaches: [
-        { name: "Norwegian Fjords", country: "Norway", description: "Dramatic coastal landscapes and northern lights" },
-        { name: "Iceland Beaches", country: "Iceland", description: "Black sand beaches and geothermal wonders" },
-        { name: "Alaska Coast", country: "USA", description: "Wilderness beaches with stunning mountain views" }
-      ]
-    },
-    west: {
-      title: "West Region Beaches",
-      beaches: [
-        { name: "California Coast", country: "USA", description: "Pacific coastline with golden beaches" },
-        { name: "Hawaiian Islands", country: "USA", description: "Tropical paradise with volcanic landscapes" },
-        { name: "Australian West Coast", country: "Australia", description: "Remote beaches with unique wildlife" }
-      ]
-    },
-    south: {
-      title: "South Region Beaches",
-      beaches: [
-        { name: "South African Coast", country: "South Africa", description: "Diverse beaches from Cape Town to Durban" },
-        { name: "Brazilian Beaches", country: "Brazil", description: "Copacabana and Ipanema famous beaches" },
-        { name: "Argentine Coast", country: "Argentina", description: "Patagonian beaches with dramatic scenery" }
-      ]
-    }
-  };
+  // Trạng thái dữ liệu, loading và lỗi
+  const [beaches, setBeaches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // If no specific direction, show all regions
+  // Lấy dữ liệu bãi biển từ API một lần
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/beaches.php`);
+        const json = await res.json();
+        if (json.status) {
+          setBeaches(Array.isArray(json.data) ? json.data : []);
+        } else {
+          setError(json.message || "Load failed");
+        }
+      } catch (e) {
+        setError(e.message || "Network error");
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, []);
+
+  // Map tiêu đề theo miền và hàm nhận diện miền từ region_name/city
+  const directionMeta = useMemo(
+    () => ({
+      east: { title: "East Region Beaches", match: (t) => /\beast\b/i.test(t) },
+      west: { title: "West Region Beaches", match: (t) => /\bwest\b/i.test(t) },
+      north: { title: "North Region Beaches", match: (t) => /\bnorth\b/i.test(t) },
+      south: { title: "South Region Beaches", match: (t) => /\bsouth\b/i.test(t) },
+    }),
+    []
+  );
+
+  // Tạo danh sách theo miền dựa trên dữ liệu thật từ API
+  const groupedByDirection = useMemo(() => {
+    const groups = { east: [], west: [], north: [], south: [] };
+    beaches.forEach((b) => {
+      const text = `${b.region_name || ""} ${b.city || ""}`.toLowerCase();
+      (Object.keys(directionMeta)).forEach((dir) => {
+        if (directionMeta[dir].match(text)) {
+          groups[dir].push(b);
+        }
+      });
+    });
+    return groups;
+  }, [beaches, directionMeta]);
+
+  // Trang tổng quan các miền
   if (!direction) {
     return (
       <div className="regions-container">
         <div className="container mt-5 pt-5">
           <h1 className="text-center mb-5">Explore Beach Regions</h1>
           <div className="row">
-            {Object.entries(beachData).map(([dir, data]) => (
+            {Object.entries(directionMeta).map(([dir, meta]) => (
               <div key={dir} className="col-md-6 col-lg-3 mb-4">
                 <div className="region-card">
-                  <h3>{data.title}</h3>
+                  <h3>{meta.title}</h3>
                   <p>Discover beautiful beaches in the {dir} region</p>
-                  <a href={`/regions/${dir}`} className="btn btn-primary">Explore {dir.charAt(0).toUpperCase() + dir.slice(1)}</a>
+                  <Link to={`/regions/${dir}`} className="btn btn-primary">
+                    Explore {dir.charAt(0).toUpperCase() + dir.slice(1)}
+                  </Link>
                 </div>
               </div>
             ))}
@@ -65,9 +82,11 @@ const Regions = () => {
     );
   }
 
-  // Show specific region
-  const regionData = beachData[direction];
-  if (!regionData) {
+  // Khi có direction cụ thể
+  const dirKey = String(direction).toLowerCase();
+  const currentMeta = directionMeta[dirKey];
+
+  if (!currentMeta) {
     return (
       <div className="container mt-5 pt-5">
         <h1>Region not found</h1>
@@ -76,33 +95,60 @@ const Regions = () => {
     );
   }
 
+  if (loading) {
+    return (
+      <div className="container mt-5 pt-5">
+        <p>Loading beaches...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mt-5 pt-5">
+        <div className="alert alert-danger">{error}</div>
+      </div>
+    );
+  }
+
+  const beachesOfRegion = groupedByDirection[dirKey] || [];
+
   return (
     <div className="regions-container">
       <div className="container mt-5 pt-5">
-        <h1 className="text-center mb-5">{regionData.title}</h1>
+        <h1 className="text-center mb-5">{currentMeta.title}</h1>
         <div className="row">
-          {regionData.beaches.map((beach, index) => (
-            <div key={index} className="col-md-6 col-lg-4 mb-4">
-              <div className="beach-card">
+          {beachesOfRegion.map((beach) => (
+            <div key={beach.id} className="col-md-6 col-lg-4 mb-4">
+              <div className="beach-card h-100">
                 <div className="beach-image">
-                  <img 
-                    src={`https://source.unsplash.com/400x300/?beach,${beach.name}`} 
+                  <img
+                    src={beach.image_url || `https://source.unsplash.com/400x300/?beach,${encodeURIComponent(beach.name || "beach")}`}
                     alt={beach.name}
                     className="img-fluid"
                   />
                 </div>
-                <div className="beach-info">
+                <div className="beach-info d-flex flex-column">
                   <h3>{beach.name}</h3>
-                  <p className="country">{beach.country}</p>
-                  <p className="description">{beach.description}</p>
-                  <button className="btn btn-outline-primary">Learn More</button>
+                  <p className="country">{beach.national || beach.country || ""}</p>
+                  <p className="description">{beach.description || ""}</p>
+                  <div className="mt-auto">
+                    <Link to={`/beach/${beach.id}`} className="btn btn-outline-primary">
+                      Read More
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
           ))}
+          {beachesOfRegion.length === 0 && (
+            <div className="col-12">
+              <div className="alert alert-info">No beaches found for this region.</div>
+            </div>
+          )}
         </div>
       </div>
-      <TransportationSection />
+      <TransportationSection direction={dirKey} beaches={beachesOfRegion} />
     </div>
   );
 };

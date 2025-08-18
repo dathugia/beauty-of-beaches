@@ -65,13 +65,13 @@ const FeaturedBeaches = () => {
               <div className="beach-card__content">
                 <div className="beach-card__info">
                   <h3 className="beach-card__name">
-                    #{beach.id} {beach.name}
+                    Top beaches in the {beach.region}
                   </h3>
-                  <p className="beach-card__country">
+                  {/* <p className="beach-card__country">
                     {beach.country} • {beach.region}
-                  </p>
+                  </p> */}
                 </div>
-                <Link to={beach.link} className="beach-card__details">
+                <Link to={`/regions/${beach.region.toLowerCase()}`} className="beach-card__details">
                   Details
                 </Link>
               </div>

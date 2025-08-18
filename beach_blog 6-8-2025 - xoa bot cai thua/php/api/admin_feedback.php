@@ -22,6 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     handleGetFeedbacks($conn);
 } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     switch ($action) {
+        case 'get_feedbacks':
+            handleGetFeedbacks($conn);
+            break;
         case 'approve':
             handleApproveFeedback($conn, $input);
             break;
@@ -45,26 +48,30 @@ function handleGetFeedbacks($conn) {
             ORDER BY bf.created_at DESC
         ";
         
-        $result = $conn->query($query);
-        $feedbacks = [];
+        $stmt = $conn->prepare($query);
+        $stmt->execute();
+        $feedbacks = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        while ($row = $result->fetch_assoc()) {
-            $feedbacks[] = [
+        // Transform data to match expected format
+        $transformedFeedbacks = [];
+        foreach ($feedbacks as $row) {
+            $transformedFeedbacks[] = [
                 'id' => $row['id'],
                 'beach_id' => $row['beach_id'],
                 'beach_name' => $row['beach_name'],
                 'visitor_name' => $row['visitor_name'],
                 'email' => $row['email'],
                 'rating' => $row['rating'],
-                'comment' => $row['comment'],
-                'is_approved' => (bool)$row['is_approved'],
+                'comment' => $row['feedback_comment'], // Note: using feedback_comment field
+                'attachment_path' => $row['attachment_path'] ?? null,
+                'is_approved' => $row['is_approved'] === null ? null : (bool)$row['is_approved'],
                 'created_at' => $row['created_at']
             ];
         }
         
         echo json_encode([
             'success' => true,
-            'feedbacks' => $feedbacks
+            'feedbacks' => $transformedFeedbacks
         ]);
         
     } catch (Exception $e) {
@@ -84,16 +91,14 @@ function handleApproveFeedback($conn, $input) {
     }
     
     try {
-        $stmt = $conn->prepare("UPDATE beach_feedback SET is_approved = TRUE WHERE id = ?");
-        $stmt->bind_param("i", $feedback_id);
+        $stmt = $conn->prepare("UPDATE beach_feedback SET is_approved = 1 WHERE id = ?");
+        $stmt->execute([$feedback_id]);
         
-        if ($stmt->execute()) {
+        if ($stmt->rowCount() > 0) {
             echo json_encode(['success' => true, 'message' => 'Feedback approved successfully']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error approving feedback']);
         }
-        
-        $stmt->close();
         
     } catch (Exception $e) {
         echo json_encode([
@@ -112,16 +117,14 @@ function handleRejectFeedback($conn, $input) {
     }
     
     try {
-        $stmt = $conn->prepare("UPDATE beach_feedback SET is_approved = FALSE WHERE id = ?");
-        $stmt->bind_param("i", $feedback_id);
+        $stmt = $conn->prepare("UPDATE beach_feedback SET is_approved = 0 WHERE id = ?");
+        $stmt->execute([$feedback_id]);
         
-        if ($stmt->execute()) {
+        if ($stmt->rowCount() > 0) {
             echo json_encode(['success' => true, 'message' => 'Feedback rejected successfully']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error rejecting feedback']);
         }
-        
-        $stmt->close();
         
     } catch (Exception $e) {
         echo json_encode([
@@ -141,15 +144,13 @@ function handleDeleteFeedback($conn, $input) {
     
     try {
         $stmt = $conn->prepare("DELETE FROM beach_feedback WHERE id = ?");
-        $stmt->bind_param("i", $feedback_id);
+        $stmt->execute([$feedback_id]);
         
-        if ($stmt->execute()) {
+        if ($stmt->rowCount() > 0) {
             echo json_encode(['success' => true, 'message' => 'Feedback deleted successfully']);
         } else {
             echo json_encode(['success' => false, 'message' => 'Error deleting feedback']);
         }
-        
-        $stmt->close();
         
     } catch (Exception $e) {
         echo json_encode([
@@ -158,6 +159,4 @@ function handleDeleteFeedback($conn, $input) {
         ]);
     }
 }
-
-$conn->close();
 ?>

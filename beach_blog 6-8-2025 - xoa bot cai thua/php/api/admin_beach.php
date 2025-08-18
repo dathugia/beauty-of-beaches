@@ -58,7 +58,7 @@ function handleGetAllBeaches($conn) {
                 (SELECT g.image_url FROM galleries g WHERE g.beach_id = b.id LIMIT 1) as gallery_image_url
             FROM beaches b
             LEFT JOIN regions r ON b.region_id = r.id
-            ORDER BY b.rank ASC, b.name ASC
+            ORDER BY b.id ASC
         ";
         
         $stmt = $conn->prepare($query);
@@ -313,7 +313,8 @@ function handleUpdateBeach($conn, $input) {
 }
 
 function handleDeleteBeach($conn, $input) {
-    $id = intval($input['id'] ?? 0);
+    // Hỗ trợ cả 'id' và 'beach_id' để tương thích
+    $id = intval($input['id'] ?? $input['beach_id'] ?? 0);
     
     if ($id <= 0) {
         echo json_encode(['success' => false, 'message' => 'Valid ID is required']);
@@ -321,18 +322,37 @@ function handleDeleteBeach($conn, $input) {
     }
     
     try {
-        $stmt = $conn->prepare("DELETE FROM beaches WHERE id = ?");
+        // Bắt đầu transaction để đảm bảo tính nhất quán
+        $conn->beginTransaction();
         
-        if ($stmt->execute([$id])) {
+        // Xóa dữ liệu từ bảng galleries trước (foreign key constraint)
+        $delete_galleries = $conn->prepare("DELETE FROM galleries WHERE beach_id = ?");
+        $delete_galleries->execute([$id]);
+        
+        // Xóa dữ liệu từ bảng beach_feedback
+        $delete_feedback = $conn->prepare("DELETE FROM beach_feedback WHERE beach_id = ?");
+        $delete_feedback->execute([$id]);
+        
+        // Xóa beach từ bảng beaches
+        $delete_beach = $conn->prepare("DELETE FROM beaches WHERE id = ?");
+        $result = $delete_beach->execute([$id]);
+        
+        if ($result) {
+            // Commit transaction
+            $conn->commit();
             echo json_encode([
                 'success' => true,
-                'message' => 'Beach deleted successfully'
+                'message' => 'Beach and related data deleted successfully'
             ]);
         } else {
+            // Rollback nếu xóa beach thất bại
+            $conn->rollback();
             echo json_encode(['success' => false, 'message' => 'Error deleting beach']);
         }
         
     } catch (Exception $e) {
+        // Rollback nếu có lỗi
+        $conn->rollback();
         echo json_encode([
             'success' => false,
             'message' => 'Error deleting beach: ' . $e->getMessage()
