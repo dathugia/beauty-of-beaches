@@ -202,6 +202,18 @@
   background: #e0e0e0;
 }
 
+/* Avatar image styles */
+.avatar-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+  border: 4px solid #f1f3f5;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
 .member-name {
   color: #2c3e50;
   font-size: 1.4rem;

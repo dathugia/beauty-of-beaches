@@ -86,7 +86,12 @@ const AboutUs = () => {
           <div className="team-grid">
             <div className="team-member">
               <div className="member-avatar">
-                <div className="avatar-placeholder"></div>
+                <img
+                  className="avatar-img"
+                  src="/images/tuan.jpg"
+                  alt="Nhữ Văn Tuấn"
+                  loading="lazy"
+                />
               </div>
               <h4 className="member-name">Nhữ Văn Tuấn</h4>
               <p className="member-role">Leader</p>
@@ -96,7 +101,12 @@ const AboutUs = () => {
             
             <div className="team-member">
               <div className="member-avatar">
-                <div className="avatar-placeholder"></div>
+                <img
+                  className="avatar-img"
+                  src="/images/giang.JPG"
+                  alt="Đào Thu Giang"
+                  loading="lazy"
+                />
               </div>
               <h4 className="member-name">Đào Thu Giang</h4>
               <p className="member-role">Frontend Developer</p>
@@ -107,7 +117,12 @@ const AboutUs = () => {
             
             <div className="team-member">
               <div className="member-avatar">
-                <div className="avatar-placeholder"></div>
+                <img
+                  className="avatar-img"
+                  src="/images/duong.jpg"
+                  alt="Nguyễn Tùng Dương"
+                  loading="lazy"
+                />
               </div>
               <h4 className="member-name">Nguyễn Tùng Dương</h4>
               <p className="member-role">Backend Developer</p>
@@ -118,7 +133,12 @@ const AboutUs = () => {
             
             <div className="team-member">
               <div className="member-avatar">
-                <div className="avatar-placeholder"></div>
+                <img
+                  className="avatar-img"
+                  src="/images/vu.jpg"
+                  alt="Nghiêm Thái Vũ"
+                  loading="lazy"
+                />
               </div>
               <h4 className="member-name">Nghiêm Thái Vũ</h4>
               <p className="member-role">Designer</p>
