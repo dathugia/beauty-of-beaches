@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './Queries.css';
 
 const Queries = () => {
@@ -175,9 +176,9 @@ const Queries = () => {
             <button className="btn btn-outline-primary support-btn">
               Contact Support
             </button>
-            <button className="btn btn-primary support-btn">
+            <Link to="/feedback?source=queries" className="btn btn-primary support-btn" title="Submit feedback">
               Submit Feedback
-            </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -5,6 +5,7 @@
   padding: 2rem; /* Padding xung quanh */
   background-color: #f8f9fa; /* Màu nền nhẹ */
   min-height: 100vh; /* Chiều cao tối thiểu bằng viewport */
+  padding-top: 6rem; /* Offset cho fixed header để không bị chèn chữ */
 }
 
 /* Header section chứa tiêu đề và mô tả */
@@ -225,6 +226,21 @@
   border-radius: 25px; /* Bo góc tròn */
   transition: all 0.3s ease; /* Hiệu ứng chuyển đổi */
   min-width: 150px; /* Chiều rộng tối thiểu */
+}
+
+/* Tăng độ tương phản cho nút Contact Support (outline) trên nền xanh */
+.support-section .support-buttons .btn-outline-primary.support-btn {
+  color: #ffffff; /* Chữ trắng để nổi bật */
+  border-color: #ffffff; /* Viền trắng rõ nét */
+  background-color: rgba(255, 255, 255, 0.06); /* Nền rất nhạt để không chìm */
+}
+
+.support-section .support-buttons .btn-outline-primary.support-btn:hover,
+.support-section .support-buttons .btn-outline-primary.support-btn:focus {
+  color: #0056b3; /* Chữ xanh đậm khi hover */
+  background-color: #ffffff; /* Nền trắng khi hover để tương phản tối đa */
+  border-color: #ffffff; /* Giữ viền trắng */
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.25); /* Bóng đổ nhẹ */
 }
 
 /* Section travel tips */
