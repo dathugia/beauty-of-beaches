@@ -8,7 +8,8 @@ const SiteMap = () => {
       { name: 'Trang Chủ', path: '/', description: 'Trang chủ với thông tin tổng quan' },
       { name: 'Về Chúng Tôi', path: '/about', description: 'Thông tin về đội ngũ và tổ chức' },
       { name: 'Liên Hệ', path: '/contact', description: 'Thông tin liên hệ và form gửi tin nhắn' },
-      { name: 'Phản Hồi', path: '/feedback', description: 'Gửi phản hồi và đánh giá' }
+      { name: 'Phản Hồi', path: '/feedback', description: 'Gửi phản hồi và đánh giá' },
+      { name: 'Câu Hỏi Thường Gặp', path: '/queries', description: 'Tìm câu trả lời cho các câu hỏi thường gặp' }
     ],
     beaches: [
       { name: 'Top 50 Bãi Biển', path: '/top50', description: 'Danh sách 50 bãi biển đẹp nhất thế giới' },

@@ -15,6 +15,7 @@ const Gallery = () => {
   const [error, setError] = useState("");
 
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
   const [lightboxImages, setLightboxImages] = useState([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
   const [lightboxTitle, setLightboxTitle] = useState("");
@@ -97,8 +98,9 @@ const Gallery = () => {
 
   const closeLightbox = () => {
     // Đảm bảo chỉ đóng một lần
-    if (!isLightboxOpen) return;
+    if (!isLightboxOpen || isClosing) return;
     
+    setIsClosing(true);
     setIsLightboxOpen(false);
     // Reset lightbox state khi đóng
     setLightboxIndex(0);
@@ -110,6 +112,11 @@ const Gallery = () => {
     
     // Re-enable body scroll khi lightbox đóng
     document.body.style.overflow = 'auto';
+    
+    // Reset isClosing sau một chút
+    setTimeout(() => {
+      setIsClosing(false);
+    }, 100);
   };
   const showPrev = () => {
     const newIndex = (lightboxIndex - 1 + lightboxImages.length) % lightboxImages.length;
@@ -187,7 +194,7 @@ const Gallery = () => {
         }
       }
     }
-  }, [imageId, groupedByBeach, isLightboxOpen]);
+  }, [imageId, groupedByBeach]);
 
   // Xử lý browser back/forward buttons
   useEffect(() => {
@@ -203,7 +210,7 @@ const Gallery = () => {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [isLightboxOpen]);
+  }, []);
 
   // Cleanup effect khi component unmount
   useEffect(() => {
@@ -218,7 +225,7 @@ const Gallery = () => {
       <Container className="mt-5 pt-5">
         {/* Breadcrumb for filtered view */}
         {beachId && groupedByBeach.length > 0 && (
-          <div className="mb-4">
+          <div className="mb-4" style={{ marginTop: '30px', marginBottom: '40px' }}>
             <Link to={`/beach/${beachId}`} className="text-decoration-none">
               <Button variant="outline-primary" size="sm">
                 <i className="fas fa-arrow-left me-2"></i>
@@ -265,58 +272,112 @@ const Gallery = () => {
               </Alert>
             )}
             
-            {/* Show all images for specific beach in grid layout */}
-            {beachId && groupedByBeach.length > 0 && (
-              <Row xs={1} md={2} lg={3} className="g-4">
-                {groupedByBeach[0].images.map((image, index) => (
-                  <Col key={image.id}>
-                    <Card className="h-100 shadow-sm" role="button" onClick={() => openLightbox(groupedByBeach[0], index)}>
-                      <Card.Img
-                        variant="top"
-                        src={image.url}
-                        alt={`${groupedByBeach[0].beachName} - Image ${index + 1}`}
-                        style={{ height: "250px", objectFit: "cover" }}
-                      />
-                      <Card.Body>
-                        <Card.Title className="fw-bold d-flex align-items-center justify-content-between">
-                          <span>Image {index + 1}</span>
-                          <Badge bg="secondary">{groupedByBeach[0].images.length}</Badge>
-                        </Card.Title>
-                        {image.caption && (
-                          <Card.Text className="text-muted small">{image.caption}</Card.Text>
-                        )}
-                        <Card.Text className="text-muted">Click to view</Card.Text>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            )}
+                         {/* Show all images for specific beach in grid layout */}
+             {beachId && groupedByBeach.length > 0 && (
+               <Row xs={1} md={2} lg={3} className="g-4" style={{ marginBottom: '60px' }}>
+                 {groupedByBeach[0].images.map((image, index) => (
+                   <Col key={image.id}>
+                                           <Card 
+                        className="h-100" 
+                        role="button" 
+                        onClick={() => openLightbox(groupedByBeach[0], index)}
+                        style={{
+                          cursor: 'pointer',
+                          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                        }}
+                      >
+                                               <Card.Img
+                          variant="top"
+                          src={image.url}
+                          alt={`${groupedByBeach[0].beachName} - Image ${index + 1}`}
+                          style={{ 
+                            height: "250px", 
+                            objectFit: "cover",
+                            transition: 'all 0.3s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.transform = 'scale(1.05)';
+                            e.target.style.filter = 'brightness(1.1)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.transform = 'scale(1)';
+                            e.target.style.filter = 'brightness(1)';
+                          }}
+                        />
+                       {/* <Card.Body>
+                         <Card.Title className="fw-bold d-flex align-items-center justify-content-between">
+                           <span>Image {index + 1}</span>
+                           <Badge bg="secondary">{groupedByBeach[0].images.length}</Badge>
+                         </Card.Title>
+                         {image.caption && (
+                           <Card.Text className="text-muted small">{image.caption}</Card.Text>
+                         )}
+                         <Card.Text className="text-muted">Click to view</Card.Text>
+                       </Card.Body> */}
+                     </Card>
+                   </Col>
+                 ))}
+               </Row>
+             )}
             
-            {/* Show all beaches when no beach_id filter */}
-            {!beachId && (
-              <Row xs={1} md={2} lg={3} className="g-4">
-                {groupedByBeach.map((group) => (
-                  <Col key={group.beachId}>
-                    <Card className="h-100 shadow-sm" role="button" onClick={() => openLightbox(group, 0)}>
-                      <Card.Img
-                        variant="top"
-                        src={group.images[0]?.url}
-                        alt={group.beachName}
-                        style={{ height: "250px", objectFit: "cover" }}
-                      />
-                      <Card.Body>
-                        <Card.Title className="fw-bold d-flex align-items-center justify-content-between">
-                          <span>{group.beachName}</span>
-                          <Badge bg="secondary">{group.images.length}</Badge>
-                        </Card.Title>
-                        <Card.Text className="text-muted">Click to view all photos</Card.Text>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))}
-              </Row>
-            )}
+                         {/* Show all beaches when no beach_id filter */}
+             {!beachId && (
+               <Row xs={1} md={2} lg={3} className="g-4" style={{ marginBottom: '60px' }}>
+                 {groupedByBeach.map((group) => (
+                   <Col key={group.beachId}>
+                                           <Card 
+                        className="h-100" 
+                        role="button" 
+                        onClick={() => openLightbox(group, 0)}
+                        style={{
+                          cursor: 'pointer',
+                          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+                        }}
+                      >
+                                               <Card.Img
+                          variant="top"
+                          src={group.images[0]?.url}
+                          alt={group.beachName}
+                          style={{ 
+                            height: "250px", 
+                            objectFit: "cover",
+                            transition: 'all 0.3s ease'
+                          }}
+                          onMouseEnter={(e) => {
+                            e.target.style.transform = 'scale(1.05)';
+                            e.target.style.filter = 'brightness(1.1)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.target.style.transform = 'scale(1)';
+                            e.target.style.filter = 'brightness(1)';
+                          }}
+                        />
+                       <Card.Body>
+                         <Card.Title className="fw-bold d-flex align-items-center justify-content-between">
+                           <span>{group.beachName}</span>
+                           <Badge bg="secondary">{group.images.length}</Badge>
+                         </Card.Title>
+                         <Card.Text className="text-muted">Click to view all photos</Card.Text>
+                       </Card.Body>
+                     </Card>
+                   </Col>
+                 ))}
+               </Row>
+             )}
           </>
         )}
 

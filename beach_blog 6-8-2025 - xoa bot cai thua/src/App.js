@@ -13,6 +13,7 @@ import Feedback from "./components/pages/feedback/Feedback";
 import ContactUs from "./components/pages/contact/ContactUs";
 import SiteMap from "./components/pages/sitemap/SiteMap";
 import BeachDetail from "./components/pages/BeachDetail";
+import Queries from "./components/pages/Queries";
 import AdminDashboard from "./components/pages/admin/AdminDashboard";
 import AdminFeedbackManagement from "./components/pages/admin/AdminFeedbackManagement";
 import AdminBeachManagement from "./components/pages/admin/AdminBeachManagement";
@@ -36,6 +37,7 @@ const App = () => {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/feedback" element={<Feedback />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/queries" element={<Queries />} />
           <Route path="/sitemap" element={<SiteMap />} />
           <Route path="/beach/:id" element={<BeachDetail />} />
           

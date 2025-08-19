@@ -1,0 +1,369 @@
+/* Container chính cho trang Queries */
+.queries-container {
+  max-width: 1200px; /* Giới hạn chiều rộng tối đa */
+  margin: 0 auto; /* Căn giữa container */
+  padding: 2rem; /* Padding xung quanh */
+  background-color: #f8f9fa; /* Màu nền nhẹ */
+  min-height: 100vh; /* Chiều cao tối thiểu bằng viewport */
+}
+
+/* Header section chứa tiêu đề và mô tả */
+.queries-header {
+  text-align: center; /* Căn giữa nội dung */
+  margin-bottom: 3rem; /* Khoảng cách với phần tiếp theo */
+  padding: 2rem 0; /* Padding trên dưới */
+}
+
+/* Tiêu đề chính của trang */
+.queries-title {
+  font-size: 3rem; /* Kích thước font lớn */
+  font-weight: bold; /* Font đậm */
+  color: #2c3e50; /* Màu chữ tối */
+  margin-bottom: 1rem; /* Khoảng cách với mô tả */
+}
+
+/* Mô tả dưới tiêu đề */
+.queries-description {
+  font-size: 1.2rem; /* Kích thước font vừa */
+  color: #6c757d; /* Màu chữ xám */
+  max-width: 600px; /* Giới hạn chiều rộng */
+  margin: 0 auto; /* Căn giữa */
+  line-height: 1.6; /* Khoảng cách dòng */
+}
+
+/* Section chứa thanh tìm kiếm */
+.search-section {
+  margin-bottom: 3rem; /* Khoảng cách với phần FAQ */
+  display: flex; /* Sử dụng flexbox */
+  justify-content: center; /* Căn giữa theo chiều ngang */
+}
+
+/* Container cho thanh tìm kiếm */
+.search-container {
+  position: relative; /* Vị trí tương đối cho icon */
+  width: 100%; /* Chiều rộng đầy đủ */
+  max-width: 500px; /* Giới hạn chiều rộng tối đa */
+}
+
+/* Icon tìm kiếm */
+.search-icon {
+  position: absolute; /* Vị trí tuyệt đối */
+  left: 15px; /* Khoảng cách từ trái */
+  top: 50%; /* Căn giữa theo chiều dọc */
+  transform: translateY(-50%); /* Dịch chuyển để căn giữa hoàn hảo */
+  color: #6c757d; /* Màu icon */
+  z-index: 2; /* Lớp trên cùng */
+}
+
+/* Input tìm kiếm */
+.search-input {
+  width: 100%; /* Chiều rộng đầy đủ */
+  padding: 15px 15px 15px 50px; /* Padding với khoảng trống cho icon */
+  border: 2px solid #e9ecef; /* Viền nhẹ */
+  border-radius: 25px; /* Bo góc tròn */
+  font-size: 1rem; /* Kích thước font */
+  background-color: white; /* Màu nền trắng */
+  transition: border-color 0.3s ease; /* Hiệu ứng chuyển đổi viền */
+}
+
+/* Hiệu ứng hover cho input */
+.search-input:focus {
+  outline: none; /* Bỏ viền mặc định */
+  border-color: #007bff; /* Màu viền khi focus */
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Bóng đổ nhẹ */
+}
+
+/* Container cho các section FAQ */
+.faq-sections {
+  margin-bottom: 3rem; /* Khoảng cách với phần tiếp theo */
+}
+
+/* Mỗi category FAQ */
+.faq-category {
+  margin-bottom: 2rem; /* Khoảng cách giữa các category */
+  background-color: white; /* Màu nền trắng */
+  border-radius: 10px; /* Bo góc */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ */
+  overflow: hidden; /* Ẩn nội dung tràn */
+}
+
+/* Header của category */
+.category-header {
+  background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient xanh */
+  color: white; /* Màu chữ trắng */
+  padding: 1.5rem; /* Padding */
+  display: flex; /* Sử dụng flexbox */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  gap: 1rem; /* Khoảng cách giữa icon và text */
+}
+
+/* Icon của category */
+.category-icon {
+  font-size: 1.5rem; /* Kích thước icon */
+  background-color: rgba(255, 255, 255, 0.2); /* Nền trong suốt */
+  padding: 0.5rem; /* Padding */
+  border-radius: 50%; /* Bo tròn */
+  display: flex; /* Sử dụng flexbox */
+  align-items: center; /* Căn giữa */
+  justify-content: center; /* Căn giữa */
+  width: 3rem; /* Chiều rộng cố định */
+  height: 3rem; /* Chiều cao cố định */
+}
+
+.category-icon i {
+  color: white; /* Màu icon trắng */
+}
+
+/* Tiêu đề category */
+.category-title {
+  margin: 0; /* Bỏ margin mặc định */
+  font-size: 1.5rem; /* Kích thước font */
+  font-weight: 600; /* Font semi-bold */
+}
+
+/* Container cho các câu hỏi */
+.questions-container {
+  padding: 0; /* Bỏ padding mặc định */
+}
+
+/* Mỗi item câu hỏi */
+.question-item {
+  border-bottom: 1px solid #e9ecef; /* Viền phân cách */
+}
+
+/* Button cho câu hỏi */
+.question-button {
+  width: 100%; /* Chiều rộng đầy đủ */
+  padding: 1.5rem; /* Padding */
+  background: none; /* Không có background */
+  border: none; /* Không có viền */
+  text-align: left; /* Căn trái text */
+  display: flex; /* Sử dụng flexbox */
+  justify-content: space-between; /* Phân bố không gian */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  cursor: pointer; /* Con trỏ pointer */
+  transition: background-color 0.3s ease; /* Hiệu ứng chuyển đổi */
+}
+
+/* Hiệu ứng hover cho button */
+.question-button:hover {
+  background-color: #f8f9fa; /* Màu nền nhẹ khi hover */
+}
+
+/* Text câu hỏi */
+.question-text {
+  font-size: 1.1rem; /* Kích thước font */
+  font-weight: 500; /* Font medium */
+  color: #2c3e50; /* Màu chữ tối */
+  flex: 1; /* Chiếm hết không gian còn lại */
+}
+
+/* Icon chevron */
+.chevron-icon {
+  color: #6c757d; /* Màu icon */
+  transition: transform 0.3s ease; /* Hiệu ứng xoay */
+}
+
+/* Container cho câu trả lời */
+.answer-container {
+  padding: 0 1.5rem 1.5rem; /* Padding */
+  background-color: #f8f9fa; /* Màu nền nhẹ */
+}
+
+/* Text câu trả lời */
+.answer-text {
+  margin: 0; /* Bỏ margin mặc định */
+  color: #495057; /* Màu chữ */
+  line-height: 1.6; /* Khoảng cách dòng */
+  font-size: 1rem; /* Kích thước font */
+}
+
+/* Section hỗ trợ */
+.support-section {
+  background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient xanh */
+  border-radius: 15px; /* Bo góc */
+  padding: 3rem; /* Padding */
+  text-align: center; /* Căn giữa nội dung */
+  margin-bottom: 3rem; /* Khoảng cách với phần tiếp theo */
+  color: white; /* Màu chữ trắng */
+}
+
+/* Nội dung hỗ trợ */
+.support-content {
+  max-width: 600px; /* Giới hạn chiều rộng */
+  margin: 0 auto; /* Căn giữa */
+}
+
+/* Tiêu đề hỗ trợ */
+.support-title {
+  font-size: 2.5rem; /* Kích thước font lớn */
+  font-weight: bold; /* Font đậm */
+  margin-bottom: 1rem; /* Khoảng cách */
+}
+
+/* Mô tả hỗ trợ */
+.support-description {
+  font-size: 1.1rem; /* Kích thước font */
+  margin-bottom: 2rem; /* Khoảng cách */
+  line-height: 1.6; /* Khoảng cách dòng */
+  opacity: 0.9; /* Độ trong suốt nhẹ */
+}
+
+/* Container cho các button hỗ trợ */
+.support-buttons {
+  display: flex; /* Sử dụng flexbox */
+  gap: 1rem; /* Khoảng cách giữa các button */
+  justify-content: center; /* Căn giữa */
+  flex-wrap: wrap; /* Cho phép xuống dòng */
+}
+
+/* Button hỗ trợ */
+.support-btn {
+  padding: 12px 30px; /* Padding */
+  font-size: 1rem; /* Kích thước font */
+  font-weight: 500; /* Font medium */
+  border-radius: 25px; /* Bo góc tròn */
+  transition: all 0.3s ease; /* Hiệu ứng chuyển đổi */
+  min-width: 150px; /* Chiều rộng tối thiểu */
+}
+
+/* Section travel tips */
+.tips-section {
+  margin-bottom: 3rem; /* Khoảng cách với phần tiếp theo */
+}
+
+/* Container cho các tip card */
+.tips-container {
+  display: grid; /* Sử dụng grid */
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+  gap: 2rem; /* Khoảng cách giữa các card */
+}
+
+/* Card tip */
+.tip-card {
+  background-color: white; /* Màu nền trắng */
+  padding: 2rem; /* Padding */
+  border-radius: 10px; /* Bo góc */
+  text-align: center; /* Căn giữa nội dung */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ */
+  transition: transform 0.3s ease; /* Hiệu ứng chuyển đổi */
+}
+
+/* Hiệu ứng hover cho tip card */
+.tip-card:hover {
+  transform: translateY(-5px); /* Di chuyển lên trên */
+}
+
+/* Icon tip */
+.tip-icon {
+  font-size: 3rem; /* Kích thước icon lớn */
+  margin-bottom: 1rem; /* Khoảng cách */
+  color: #007bff; /* Màu icon xanh */
+}
+
+.tip-icon i {
+  font-size: 3rem; /* Kích thước icon */
+}
+
+/* Tiêu đề tip */
+.tip-title {
+  font-size: 1.5rem; /* Kích thước font */
+  font-weight: 600; /* Font semi-bold */
+  color: #2c3e50; /* Màu chữ tối */
+  margin-bottom: 1rem; /* Khoảng cách */
+}
+
+/* Mô tả tip */
+.tip-description {
+  color: #6c757d; /* Màu chữ xám */
+  line-height: 1.6; /* Khoảng cách dòng */
+}
+
+/* Section travel to paradise */
+.travel-section {
+  text-align: center; /* Căn giữa nội dung */
+}
+
+/* Tiêu đề travel */
+.travel-title {
+  font-size: 2.5rem; /* Kích thước font lớn */
+  font-weight: bold; /* Font đậm */
+  color: #2c3e50; /* Màu chữ tối */
+  margin-bottom: 2rem; /* Khoảng cách */
+}
+
+/* Container cho các travel option */
+.travel-options {
+  display: grid; /* Sử dụng grid */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Responsive grid */
+  gap: 2rem; /* Khoảng cách giữa các card */
+}
+
+/* Card travel */
+.travel-card {
+  background-color: white; /* Màu nền trắng */
+  padding: 2rem; /* Padding */
+  border-radius: 10px; /* Bo góc */
+  text-align: center; /* Căn giữa nội dung */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Bóng đổ nhẹ */
+  transition: transform 0.3s ease; /* Hiệu ứng chuyển đổi */
+}
+
+/* Hiệu ứng hover cho travel card */
+.travel-card:hover {
+  transform: translateY(-5px); /* Di chuyển lên trên */
+}
+
+/* Icon travel */
+.travel-icon {
+  font-size: 3rem; /* Kích thước icon lớn */
+  margin-bottom: 1rem; /* Khoảng cách */
+  color: #007bff; /* Màu icon xanh */
+}
+
+.travel-icon i {
+  font-size: 3rem; /* Kích thước icon */
+}
+
+/* Tiêu đề travel card */
+.travel-card-title {
+  font-size: 1.5rem; /* Kích thước font */
+  font-weight: 600; /* Font semi-bold */
+  color: #2c3e50; /* Màu chữ tối */
+  margin-bottom: 1rem; /* Khoảng cách */
+}
+
+/* Mô tả travel card */
+.travel-card-description {
+  color: #6c757d; /* Màu chữ xám */
+  line-height: 1.6; /* Khoảng cách dòng */
+}
+
+/* Responsive design cho mobile */
+@media (max-width: 768px) {
+  .queries-container {
+    padding: 1rem; /* Giảm padding trên mobile */
+  }
+  
+  .queries-title {
+    font-size: 2rem; /* Giảm kích thước font */
+  }
+  
+  .support-title {
+    font-size: 2rem; /* Giảm kích thước font */
+  }
+  
+  .travel-title {
+    font-size: 2rem; /* Giảm kích thước font */
+  }
+  
+  .support-buttons {
+    flex-direction: column; /* Xếp dọc các button */
+    align-items: center; /* Căn giữa */
+  }
+  
+  .tips-container,
+  .travel-options {
+    grid-template-columns: 1fr; /* Một cột trên mobile */
+  }
+}

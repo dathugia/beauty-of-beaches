@@ -1,0 +1,95 @@
+/* Container cho nút Back to Top */
+.back-to-top-btn {
+  position: fixed; /* Vị trí cố định */
+  bottom: 30px; /* Khoảng cách từ dưới */
+  right: 30px; /* Khoảng cách từ phải */
+  width: 50px; /* Chiều rộng nút */
+  height: 50px; /* Chiều cao nút */
+  background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient xanh */
+  color: white; /* Màu chữ trắng */
+  border: none; /* Không có viền */
+  border-radius: 50%; /* Bo tròn */
+  cursor: pointer; /* Con trỏ pointer */
+  display: flex; /* Sử dụng flexbox */
+  align-items: center; /* Căn giữa theo chiều dọc */
+  justify-content: center; /* Căn giữa theo chiều ngang */
+  font-size: 1.2rem; /* Kích thước icon */
+  box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); /* Bóng đổ xanh */
+  transition: all 0.3s ease; /* Hiệu ứng chuyển đổi mượt mà */
+  z-index: 1000; /* Lớp trên cùng */
+  opacity: 0; /* Ban đầu ẩn */
+  transform: translateY(20px) scale(0.8); /* Dịch chuyển xuống dưới và nhỏ */
+  animation: fadeInUp 0.3s ease forwards; /* Animation xuất hiện */
+}
+
+/* Hiệu ứng hover cho nút */
+.back-to-top-btn:hover {
+  background: linear-gradient(135deg, #0056b3, #004085); /* Gradient tối hơn */
+  transform: translateY(-3px) scale(1.05); /* Di chuyển lên trên và phóng to */
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4); /* Bóng đổ lớn hơn */
+}
+
+/* Hiệu ứng active khi click */
+.back-to-top-btn:active {
+  transform: translateY(-1px) scale(0.95); /* Di chuyển nhẹ lên trên và thu nhỏ */
+  box-shadow: 0 3px 10px rgba(0, 123, 255, 0.3); /* Bóng đổ nhỏ hơn */
+}
+
+/* Icon bên trong nút */
+.back-to-top-btn i {
+  transition: transform 0.3s ease; /* Hiệu ứng chuyển đổi cho icon */
+}
+
+/* Hiệu ứng hover cho icon */
+.back-to-top-btn:hover i {
+  transform: translateY(-2px); /* Di chuyển icon lên trên */
+}
+
+/* Animation xuất hiện */
+@keyframes fadeInUp {
+  from {
+    opacity: 0; /* Bắt đầu trong suốt */
+    transform: translateY(20px) scale(0.8); /* Bắt đầu từ dưới và nhỏ */
+  }
+  to {
+    opacity: 1; /* Kết thúc hiển thị */
+    transform: translateY(0) scale(1); /* Kết thúc ở vị trí gốc và kích thước đầy đủ */
+  }
+}
+
+/* Responsive design cho mobile */
+@media (max-width: 768px) {
+  .back-to-top-btn {
+    bottom: 20px; /* Giảm khoảng cách từ dưới */
+    right: 20px; /* Giảm khoảng cách từ phải */
+    width: 45px; /* Giảm kích thước nút */
+    height: 45px; /* Giảm kích thước nút */
+    font-size: 1rem; /* Giảm kích thước icon */
+  }
+}
+
+/* Responsive design cho tablet */
+@media (max-width: 1024px) {
+  .back-to-top-btn {
+    bottom: 25px; /* Điều chỉnh khoảng cách */
+    right: 25px; /* Điều chỉnh khoảng cách */
+  }
+}
+
+/* Hiệu ứng focus cho accessibility */
+.back-to-top-btn:focus {
+  outline: none; /* Bỏ viền mặc định */
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Viền focus */
+}
+
+/* Dark mode support (nếu cần) */
+@media (prefers-color-scheme: dark) {
+  .back-to-top-btn {
+    background: linear-gradient(135deg, #0056b3, #003d82); /* Gradient tối hơn */
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4); /* Bóng đổ tối hơn */
+  }
+  
+  .back-to-top-btn:hover {
+    background: linear-gradient(135deg, #004085, #002752); /* Gradient tối nhất */
+  }
+}
