@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // Thêm useNavigate
 import { Col, Container, Row, Card, Alert, Spinner } from "react-bootstrap"; // Import Bootstrap components
 import { API_BASE_URL } from "../../util/url";
 import BeachHeader from "./BeachHeader"; // Import BeachHeader component
@@ -8,6 +8,7 @@ import "./BeachDetail.css"; // Import CSS file
 const BeachDetail = () => {
     // Lấy id từ URL params
     const { id } = useParams();
+    const navigate = useNavigate(); // Thêm navigate hook
     // State để lưu thông tin bãi biển
     const [beach, setBeach] = useState({});
     // State để lưu galleries của beach
@@ -381,7 +382,7 @@ const BeachDetail = () => {
                                         }}
                                         onMouseEnter={(e) => e.target.style.background = 'rgba(0,0,0,0.8)'}
                                         onMouseLeave={(e) => e.target.style.background = 'rgba(0,0,0,0.6)'}
-                                        onClick={() => window.location.href = `/gallery?beach_id=${id}`}
+                                        onClick={() => navigate(`/gallery?beach_id=${id}`)}
                                     >
                                         <div style={{
                                             textAlign: 'center',

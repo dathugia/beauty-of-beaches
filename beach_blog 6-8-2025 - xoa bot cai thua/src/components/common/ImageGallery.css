@@ -99,6 +99,16 @@
     background-color: white;
 }
 
+/* Animation cho lightbox */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 /* Responsive: đảm bảo caption luôn thấy được trên màn nhỏ */
 @media (max-width: 768px) {
   .lightbox-content { max-height: 88vh; }
